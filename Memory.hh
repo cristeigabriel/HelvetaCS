@@ -34,10 +34,10 @@ struct Memory_t
 
 	Cvars_t m_Cvars;
 
-	CCSPlayer *LocalPlayer();
+	CCSPlayer *LocalPlayer() const;
 
 	template <typename Prototype>
-	void ApplyHook(void *pAddress);
+	void ApplyHook(void *pAddress) const;
 
 private:
 	CCSPlayer **m_ppLocal;
@@ -46,7 +46,7 @@ private:
 };
 
 template <typename Prototype>
-void Memory_t::ApplyHook(void *pAddress)
+void Memory_t::ApplyHook(void *pAddress) const
 {
 	assert(this->m_HookFn(pAddress, Prototype::Hooked, &Prototype::Original, 0));
 }

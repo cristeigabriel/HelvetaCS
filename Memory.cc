@@ -63,7 +63,7 @@ Memory_t::Memory_t() : m_Client("client.dll"), m_Engine("engine.dll"), m_GameOve
 	ADDRSET_PAD(this->m_ppLocal, CCSPlayer ***, 1, *this->m_Client.FindString<"No local player %d after full frame update\n", false>().FollowUntil(0x3D, false));
 }
 
-CCSPlayer *Memory_t::LocalPlayer()
+CCSPlayer *Memory_t::LocalPlayer() const
 {
 	return *this->m_ppLocal;
 }

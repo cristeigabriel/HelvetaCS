@@ -145,6 +145,28 @@ void Hooks::Bootstrap()
 		g_pConsole->AddIdentifier("misc.no_duck_delay", false);
 		g_pConsole->AddIdentifier("misc.bunny_hop", false);
 
+		g_pConsole->AddCallback("misc.unlock_convar", [](Console_t *pConsole)
+								{
+									static SDK::ConVar *pFirstCVar = *g_pMemory->m_Client.FindPattern(STB("6A 00 51 C7 04 24 ? ? ? ? 6A 00 51 C7 04 24 ? ? ? ? B9 ? ? ? ?")).FollowUntil(0xB9, true).Get<SDK::ConVar **>(1);
+									if (!pFirstCVar)
+										return false;
+
+									int iCount = 0;
+									for (SDK::ConVar *pCVar = pFirstCVar; pCVar; pCVar = pCVar->m_pNext)
+									{
+										//	(1 << 1) = 2 = FCVAR_DEVELOPMENTONLY
+										if (pCVar->m_nFlags & 2)
+										{
+											pCVar->m_nFlags &= ~2;
+											++iCount;
+										}
+									}
+
+									const std::string &strPresentationString = std::string("Unlocked " + std::to_string(iCount) + " Convars.");
+									pConsole->WriteToBuffer(strPresentationString);
+									return true;
+								});
+
 		g_pConsole->AddIdentifier("esp.box", false);
 
 		g_pConsole->AddCallback("config.save", [](Console_t *pConsole)

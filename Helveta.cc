@@ -18,6 +18,6 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 
 	g_pMemory = std::make_unique<Memory_t>();
 	Hooks::Bootstrap();
-	
+
 	return true;
 }
