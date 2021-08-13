@@ -15,5 +15,16 @@ Counter-Strike: Global Offensive Cheat base written in and with C++20 concepts.
 - Memory String finder with compile-time folding into an array for the pattern scanning process,
 - GameOverlayRenderer hooking.
 
+# Building Process
+I, the author, personally use the following:
+- Visual Studio Code
+- - Plugins
+- - - CMake
+- - - CMake Tools
+- - - C++
+- Visual Studio 2022 Build Tools (x86, v143) CMakeTools kit with MSBuild (tools obtainable from Visual Studio Installer)
+
+With the aforementioned, what's left to do is to prompt the CMake plugin to set up its environment in the IDE, and offer me utilities or specific IDE configuration edits according to my current ones in comparassion to the project's, then pressing 'Build'.
+
 # Licensing
 WTFPL, available in the LICENSE file
