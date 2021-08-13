@@ -167,8 +167,11 @@ void Hooks::Bootstrap()
 									return true;
 								});
 
+		g_pConsole->AddIdentifier("esp.y_animation", false);
 		g_pConsole->AddIdentifier("esp.box", false);
+		g_pConsole->AddIdentifier("esp.box_color", Color_t(255, 255, 255, 255));
 		g_pConsole->AddIdentifier("esp.name", false);
+		g_pConsole->AddIdentifier("esp.name_color", Color_t(255, 255, 255, 255));
 
 		g_pConsole->AddCallback("config.save", [](Console_t *pConsole)
 								{

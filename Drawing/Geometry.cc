@@ -7,8 +7,8 @@
  * 
  */
 //	========================================================================================================================================
-#define IMVEC4_COLOR_RGBA(x, y, z, w) ImGui::GetColorU32(ImVec4(x / 255.F, y / 255.F, z / 255.F, w / 255.F))
-#define IMVEC4_COLOR(x) IMVEC4_COLOR_RGBA(x.m_u8R, x.m_u8G, x.m_u8G, x.m_u8A)
+#define IMVEC4_COLOR_RGBA(x, y, z, w) ImGui::GetColorU32(ImGui::ColorConvertFloat4ToU32(ImVec4(x / 255.F, y / 255.F, z / 255.F, w / 255.F)))
+#define IMVEC4_COLOR(x) IMVEC4_COLOR_RGBA(x.m_u8R, x.m_u8G, x.m_u8B, x.m_u8A)
 #define IMVEC2(x, y) ImVec2((float)(x), (float)(y))
 #define POSITION(x, y, w, h) IMVEC2(x, y), IMVEC2(x + w, y + h)
 //	========================================================================================================================================

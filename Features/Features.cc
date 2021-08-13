@@ -99,6 +99,9 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 
 	static const ImFont *pFont = g_pDrawing->GetFont(HASH("Terminus"));
 
+	COLOR_GET(boxColor, "esp.box_color");
+	COLOR_GET(nameColor, "esp.name_color");
+
 	g_pEntityCache->Loop([&](CCSPlayer *pPl)
 						 {
 							 if (!pPl->Alive())
@@ -116,14 +119,15 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 								 Vector_t<int>::V4 vecPosition;
 								 if (ComputeBoundingBox(pPl, vecPosition) && vecPosition.IsValid())
 								 {
-									 vecPosition[1] += 16 - (16 * animator.Get());
+									 if (BOOL_GET(bRef, "esp.y_animation"); bRef)
+										 vecPosition[1] += 16 - (16 * animator.Get());
 
 									 if (BOOL_GET(bRef, "esp.box"); bRef)
-										 pQueue->Push(std::move(std::make_shared<RectangleOutline_t>(vecPosition[0], vecPosition[1], vecPosition[2], vecPosition[3], Color_t(255, 255, 255, 255).ModifyA(animator.Get()))));
+										 pQueue->Push(std::move(std::make_shared<RectangleOutline_t>(vecPosition[0], vecPosition[1], vecPosition[2], vecPosition[3], boxColor.ModifyA(animator.Get()))));
 
 									 if (BOOL_GET(bRef, "esp.name"); bRef)
 									 {
-										 std::shared_ptr<Text_t> &&text = std::make_shared<Text_t>(vecPosition[0] + vecPosition[2] / 2, vecPosition[1] - 2, std::string_view{playerInfo.m_szName}, pFont, 15.F, Color_t(255, 255, 255, 255).ModifyA(animator.Get()));
+										 std::shared_ptr<Text_t> &&text = std::make_shared<Text_t>(vecPosition[0] + vecPosition[2] / 2, vecPosition[1] - 2, std::string_view{playerInfo.m_szName}, pFont, 15.F, nameColor.ModifyA(animator.Get()));
 										 text->m_iX -= text->m_iW / 2;
 										 text->m_iY -= text->m_iH;
 										 pQueue->Push(std::move(text));
