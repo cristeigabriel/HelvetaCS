@@ -168,6 +168,7 @@ void Hooks::Bootstrap()
 								});
 
 		g_pConsole->AddIdentifier("esp.box", false);
+		g_pConsole->AddIdentifier("esp.name", false);
 
 		g_pConsole->AddCallback("config.save", [](Console_t *pConsole)
 								{

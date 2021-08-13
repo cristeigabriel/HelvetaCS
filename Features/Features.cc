@@ -4,6 +4,7 @@
 #include "../SDK/Constants.hh"
 #include "../SDK/CUserCmd.hh"
 #include "../SDK/IVDebugOverlay.hh"
+#include "../SDK/IVEngineClient.hh"
 
 #include "../Entities/CCSPlayer.hh"
 #include "../Entities/Cacher.hh"
@@ -96,6 +97,8 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 	if (!g_pMemory->LocalPlayer())
 		return;
 
+	static const ImFont *pFont = g_pDrawing->GetFont(HASH("Terminus"));
+
 	g_pEntityCache->Loop([&](CCSPlayer *pPl)
 						 {
 							 if (!pPl->Alive())
@@ -106,6 +109,10 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 
 							 if (animator.Get() > 0.F)
 							 {
+								 PlayerInfo_t playerInfo;
+								 if (!g_pMemory->m_pEngineClient->GetPlayerInfo(pPl->Networkable()->Index(), &playerInfo))
+									 return;
+
 								 Vector_t<int>::V4 vecPosition;
 								 if (ComputeBoundingBox(pPl, vecPosition) && vecPosition.IsValid())
 								 {
@@ -113,6 +120,14 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 
 									 if (BOOL_GET(bRef, "esp.box"); bRef)
 										 pQueue->Push(std::move(std::make_shared<RectangleOutline_t>(vecPosition[0], vecPosition[1], vecPosition[2], vecPosition[3], Color_t(255, 255, 255, 255).ModifyA(animator.Get()))));
+
+									 if (BOOL_GET(bRef, "esp.name"); bRef)
+									 {
+										 std::shared_ptr<Text_t> &&text = std::make_shared<Text_t>(vecPosition[0] + vecPosition[2] / 2, vecPosition[1] - 2, std::string_view{playerInfo.m_szName}, pFont, 15.F, Color_t(255, 255, 255, 255).ModifyA(animator.Get()));
+										 text->m_iX -= text->m_iW / 2;
+										 text->m_iY -= text->m_iH;
+										 pQueue->Push(std::move(text));
+									 }
 								 }
 							 }
 						 });
