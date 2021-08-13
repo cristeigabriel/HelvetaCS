@@ -48,3 +48,4 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 string(REGEX REPLACE "/GR" "/GR-" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 string(REGEX REPLACE "/EHsc" "/EHs-c-" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 add_definitions(-D_HAS_EXCEPTIONS=0) # for STL
+add_definitions(/MP) # multi-processor compilation
