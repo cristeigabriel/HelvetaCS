@@ -131,10 +131,13 @@ void Console_t::WndProc(UINT u32Msg, WPARAM wParam)
 
 		case VK_TAB:
 		{
-			SetAutoSuggestFocusIfPossible();
-
 			if (this->m_iMaxH > 0 && (this->m_strInputBuffer.empty() || this->m_bAbleToSwitchFocus))
 				this->m_bInputFocus = !this->m_bInputFocus;
+			else
+			{
+				if (this->m_nAvailableSuggestedOptions > 0)
+					this->m_nAutoSuggestedSelection = max(0, min((this->m_nAutoSuggestedSelection + 1) % this->m_nAvailableSuggestedOptions, this->m_nAvailableSuggestedOptions - 1));
+			}
 		}
 		break;
 
