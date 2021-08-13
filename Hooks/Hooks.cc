@@ -180,11 +180,11 @@ void Hooks::Bootstrap()
 
 		g_pConsole->AddCallback("help", [](Console_t *pConsole)
 								{
-									if (pConsole->m_deqCollection.empty())
+									if (pConsole->m_vecCollection.empty())
 										return false;
 
 									pConsole->WriteToBuffer("- The following represents all the available help material");
-									for (const auto &[first, second] : pConsole->m_deqCollection)
+									for (const auto &[first, second] : pConsole->m_vecCollection)
 									{
 										const std::string &strPresentationString = std::string(first.first + ": " + (second.first ? "Callback (command)" : "Identifier (value)"));
 										pConsole->WriteToBuffer(strPresentationString);

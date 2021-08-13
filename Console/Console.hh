@@ -63,7 +63,7 @@ private:
 
 public:
 	//	Last pair = {callback, hash}
-	std::deque<std::pair<std::pair<std::string, bool>, std::pair<bool, Hash_t>>> m_deqCollection = {};
+	std::vector<std::pair<std::pair<std::string, bool>, std::pair<bool, Hash_t>>> m_vecCollection = {};
 
 private:
 	std::string m_strConfig = {};

@@ -30,9 +30,9 @@ void Console_t::Think()
 	this->m_nAvailableSuggestedOptions = 0;
 	this->m_bAbleToSwitchFocus = true;
 
-	if (this->m_bOpen && !this->m_strInputBuffer.empty() && !this->m_deqCollection.empty())
+	if (this->m_bOpen && !this->m_strInputBuffer.empty() && !this->m_vecCollection.empty())
 	{
-		for (auto &[first, second] : this->m_deqCollection)
+		for (auto &[first, second] : this->m_vecCollection)
 		{
 			for (size_t i = 0; i < this->m_strInputBuffer.size(); ++i)
 			{
@@ -240,7 +240,7 @@ void Console_t::Draw(Drawing_t *pDraw) const
 		int iCount = 0;
 		if (!this->m_strInputBuffer.empty())
 		{
-			for (const auto &[first, second] : this->m_deqCollection)
+			for (const auto &[first, second] : this->m_vecCollection)
 			{
 				if (!first.second)
 					continue;
@@ -271,7 +271,7 @@ void Console_t::AddCallback(const std::string_view strName, Callback_t &&method)
 	//	Store string form of the callback for auto-suggest
 	//	Also apply characteristic.
 	//	String not suggestible by default.
-	this->m_deqCollection.emplace_front(std::make_pair(strName, false), std::make_pair(true, hHash));
+	this->m_vecCollection.emplace_back(std::make_pair(strName, false), std::make_pair(true, hHash));
 
 	//	Assign callback to hash.
 	this->m_umCallbacks[hHash] = std::move(method);
@@ -283,7 +283,7 @@ void Console_t::AddIdentifier(const std::string_view strName, Config_t defaultVa
 	//	Store string form of the identifier for auto-suggest
 	//	Also apply characteristic.
 	//	String not suggestible by default.
-	this->m_deqCollection.emplace_front(std::make_pair(strName, false), std::make_pair(false, hHash));
+	this->m_vecCollection.emplace_back(std::make_pair(strName, false), std::make_pair(false, hHash));
 
 	//	Type will be processable by holds_alternative.
 	this->m_umIdentifiers[hHash] = defaultValue;
@@ -408,7 +408,7 @@ bool Console_t::SetAutoSuggestFocusIfPossible()
 	{
 		//	Find Nth compliant suggestion
 		int iCount = 0;
-		for (const auto &[first, second] : this->m_deqCollection)
+		for (const auto &[first, second] : this->m_vecCollection)
 		{
 			if (!first.second)
 				continue;
@@ -437,7 +437,7 @@ void Console_t::SaveConfig() const
 	nlohmann::json jsonConfig;
 
 	//	Traverse collection for identifiers
-	for (const auto &[first, second] : this->m_deqCollection)
+	for (const auto &[first, second] : this->m_vecCollection)
 	{
 		//	Don't process if it's a callback
 		if (second.first)
@@ -469,7 +469,7 @@ bool Console_t::LoadConfig()
 
 	const nlohmann::json &jsonConfig = nlohmann::json::parse(ifConfigStream);
 	//	Traverse collection for identifiers
-	for (const auto &[first, second] : this->m_deqCollection)
+	for (const auto &[first, second] : this->m_vecCollection)
 	{
 		//	Don't process if it's a callback
 		if (second.first)
