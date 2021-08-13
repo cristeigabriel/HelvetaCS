@@ -4,18 +4,6 @@
 #include "Memory.hh"
 #include "Hooks/Hooks.hh"
 
-struct a
-{
-	int b;
-};
-
-struct b
-{
-	friend class a;
-};
-
-b t;
-
 BOOL APIENTRY DllMain(HMODULE hModule,
 					  DWORD ul_reason_for_call,
 					  LPVOID lpReserved)
