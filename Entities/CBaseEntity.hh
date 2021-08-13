@@ -28,9 +28,9 @@ public:
 * 
 */
 NETWORKED_CLASS(CBaseEntity,
-				IClientNetworkable *Networkable();
 				NETWORKED_VARIABLE_DEDUCE(m_iTeamNum);
 
+				IClientNetworkable * Networkable();
 				OFFSET(uint8_t, m_nMoveType, g_pNetvars->Get(hHash, HASH("m_nRenderMode")) + 1);
 
 				bool ComputeHitboxSurroundingBox(Vector_t<float>::V3 *pVecMins, Vector_t<float>::V3 *pVecMaxs););

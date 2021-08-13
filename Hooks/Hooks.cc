@@ -144,7 +144,6 @@ void Hooks::Bootstrap()
 	{
 		g_pConsole->AddIdentifier("misc.no_duck_delay", false);
 		g_pConsole->AddIdentifier("misc.bunny_hop", false);
-
 		g_pConsole->AddCallback("misc.unlock_convar", [](Console_t *pConsole)
 								{
 									static SDK::ConVar *pFirstCVar = *g_pMemory->m_Client.FindPattern(STB("6A 00 51 C7 04 24 ? ? ? ? 6A 00 51 C7 04 24 ? ? ? ? B9 ? ? ? ?")).FollowUntil(0xB9, true).Get<SDK::ConVar **>(1);
