@@ -314,7 +314,6 @@ namespace Helveta
 		constexpr static char Delimiter = ' ';
 		constexpr static char Mask = '?';
 		constexpr static int Masked = -1;
-		using ResultType = int;
 
 		struct Data
 		{
@@ -360,7 +359,7 @@ namespace Helveta
 			constexpr auto iNext = data.m_iNext;
 			constexpr auto iEnd = data.m_iEnd;
 
-			std::array<ResultType, iCount> rgResult = {};
+			std::array<int, iCount> rgResult = {};
 			std::array<size_t, iCount> rgSkips = {};
 
 			size_t nSkips = 0u;
@@ -381,7 +380,7 @@ namespace Helveta
 				++nTraversed;
 			}
 
-			rgResult[0] = Compiled[iStart] == Mask ? Masked : detail::CombineHex<ResultType>(detail::StrChToHex(Compiled[iStart]), detail::StrChToHex(Compiled[iStart + 1]));
+			rgResult[0] = Compiled[iStart] == Mask ? Masked : detail::CombineHex<int>(detail::StrChToHex(Compiled[iStart]), detail::StrChToHex(Compiled[iStart + 1]));
 
 			size_t nConversions = 1u;
 			for (auto i = iNext; i < iEnd; ++i)
@@ -392,7 +391,7 @@ namespace Helveta
 					{
 						size_t iCharacterIdx = Compiled.FindFirstNotOf(Delimiter, i + 1);
 						bool bIsOneChar = Compiled[iCharacterIdx + 1] == Delimiter;
-						rgResult[nConversions++] = Compiled[iCharacterIdx] == Mask ? Masked : (bIsOneChar ? detail::StrChToHex(Compiled[iCharacterIdx]) : detail::CombineHex<ResultType>(detail::StrChToHex(Compiled[iCharacterIdx]), detail::StrChToHex(Compiled[iCharacterIdx + 1])));
+						rgResult[nConversions++] = Compiled[iCharacterIdx] == Mask ? Masked : (bIsOneChar ? detail::StrChToHex(Compiled[iCharacterIdx]) : detail::CombineHex<int>(detail::StrChToHex(Compiled[iCharacterIdx]), detail::StrChToHex(Compiled[iCharacterIdx + 1])));
 					}
 				}
 			}
@@ -482,7 +481,7 @@ namespace Helveta
 				return operator[](i);
 			}
 
-			const Pack &CArray() const
+			const Pack &Raw() const
 			{
 				return this->m_rgContents;
 			}
@@ -498,11 +497,10 @@ namespace Helveta
 			{
 				static_assert(N <= m_nPackLen);
 
-				const Pack &contents = CArray();
 				T result = {};
 
 				for (size_t i = 0; i < N; ++i)
-					result += contents[i] * contents[i];
+					result += this->m_rgContents[i] * this->m_rgContents[i];
 
 				return result;
 			}
@@ -518,11 +516,10 @@ namespace Helveta
 			{
 				static_assert(N <= m_nPackLen);
 
-				const Pack &contents = CArray();
 				T result = {};
 
 				for (size_t i = 0; i < N; ++i)
-					result += contents[i] * arg;
+					result += this->m_rgContents[i] * arg;
 
 				return result;
 			}

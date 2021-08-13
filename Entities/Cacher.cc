@@ -11,7 +11,7 @@ void EntityCacher_t::Add(CCSPlayer *pPl)
 {
 	if (pPl)
 	{
-		auto itFound = std::ranges::find(this->m_vecPlayers, pPl);
+		const auto itFound = std::ranges::find(this->m_vecPlayers, pPl);
 		if (pPl != g_pMemory->LocalPlayer() && itFound == this->m_vecPlayers.cend() && pPl->Networkable()->Index() >= 1 && pPl->Networkable()->Index() <= 64)
 			this->m_vecPlayers.push_back(pPl);
 	}
@@ -21,7 +21,7 @@ void EntityCacher_t::Remove(CCSPlayer *pPl)
 {
 	if (pPl)
 	{
-		auto itFound = std::ranges::find(this->m_vecPlayers, pPl);
+		const auto itFound = std::ranges::find(this->m_vecPlayers, pPl);
 		if (itFound != this->m_vecPlayers.cend())
 			this->m_vecPlayers.erase(itFound);
 	}
