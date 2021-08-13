@@ -121,11 +121,14 @@ void Console_t::WndProc(UINT u32Msg, WPARAM wParam)
 
 		case VK_BACK:
 		{
-			//	Upon the loss of a  character, we want to reset the auto suggestion scroll count
-			this->m_nAutoSuggestedSelection = 0;
+			if (this->m_bInputFocus)
+			{
+				//	Upon the loss of a  character, we want to reset the auto suggestion scroll count
+				this->m_nAutoSuggestedSelection = 0;
 
-			if (!this->m_strInputBuffer.empty())
-				this->m_strInputBuffer.pop_back();
+				if (!this->m_strInputBuffer.empty())
+					this->m_strInputBuffer.pop_back();
+			}
 		}
 		break;
 
