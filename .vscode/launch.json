@@ -1,0 +1,17 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Debug DLL",
+			"type": "cppvsdbg",
+			"request": "attach",
+			"program": "D:\\SteamLibrary\\steamapps\\common\\Counter-Strike Global Offensive\\csgo.exe",
+			"processName": "csgo.exe",
+			"args": [],
+			"stopAtEntry": false,
+			"cwd": "${fileDirname}",
+			"environment": [],
+			"console": "externalTerminal"
+		}
+	]
+}

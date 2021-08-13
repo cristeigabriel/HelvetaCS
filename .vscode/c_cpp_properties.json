@@ -1,0 +1,23 @@
+{
+	"configurations": [
+		{
+			"name": "Win32",
+			"includePath": [
+				"${workspaceFolder}/**",
+				"C:\\Program Files (x86)\\Microsoft DirectX SDK (June 2010)\\Include\\**"
+			],
+			"defines": [
+				"_DEBUG",
+				"UNICODE",
+				"_UNICODE"
+			],
+			"windowsSdkVersion": "10.0.19041.0",
+			"compilerPath": "C:/Program Files/Microsoft Visual Studio/2022/Preview/VC/Tools/MSVC/14.29.30130/bin/Hostx64/x64/cl.exe",
+			"cStandard": "c17",
+			"configurationProvider": "ms-vscode.cmake-tools",
+			"intelliSenseMode": "windows-msvc-x86",
+			"cppStandard": "c++20"
+		}
+	],
+	"version": 4
+}
