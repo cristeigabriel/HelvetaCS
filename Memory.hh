@@ -30,6 +30,7 @@ struct Memory_t
 	SDK::IClientEntityList *m_pEntityList;
 	SDK::IInputSystem *m_pInputSystem;
 	SDK::IVDebugOverlay *m_pDebugOverlay;
+	SDK::IVEngineClient *m_pEngineClient;
 
 	Cvars_t m_Cvars;
 

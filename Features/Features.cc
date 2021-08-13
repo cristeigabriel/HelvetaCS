@@ -102,7 +102,7 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 								 return;
 
 							 Animator_t &animator = this->m_umAlpha[pPl->Networkable()->Index()];
-							 animator.Set(!pPl->Networkable()->IsDormant(), Animation_t{8.F, Easing::OutQuart}, Animation_t{8.F, Easing::OutQuart});
+							 animator.Set(!pPl->Networkable()->IsDormant(), Animation_t{3.F, Easing::OutQuart}, Animation_t{3.F, Easing::OutQuart});
 
 							 if (animator.Get() > 0.F)
 							 {

@@ -35,7 +35,8 @@ namespace SDK
 	class ConVar;
 	class IInputSystem;
 	class IVDebugOverlay;
-
+	class IVEngineClient;
+	
 	//	Likewise with typedefs.
 	using CreateClientClass = void *(__cdecl *)(int, int);
 	using CreateEvent = void *(__cdecl *)();
