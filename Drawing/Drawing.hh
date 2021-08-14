@@ -20,7 +20,7 @@ struct Drawing_t
 
 	void UpdateIO(int iScreenW, int iScreenH);
 
-	void Draw(Base_t &&renderable) const;
+	void Draw(const Base_t &renderable) const;
 	void Run(const std::function<void(Drawing_t *)> &runFn);
 
 	void PushClip(int iX, int iY, int iW, int iH) const;

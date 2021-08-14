@@ -204,13 +204,13 @@ void Console_t::Draw(Drawing_t *pDraw) const
 			pDraw->PushClip(0, -iAnimY, iW, this->m_iH);
 
 			//	Draw Background
-			pDraw->Draw(std::move(Rectangle_t(0, -iAnimY, iW, this->m_iH, Color_t(36, 37, 42, 102))));
+			pDraw->Draw(Rectangle_t(0, -iAnimY, iW, this->m_iH, Color_t(36, 37, 42, 102)));
 
 			for (size_t i = 0; i < this->m_deqConsoleBuffer.size(); ++i)
 			{
 				const Color_t &color = (this->m_deqConsoleBuffer[i][0] == '!') ? Color_t(255, 0, 0, 255) : (this->m_bInputFocus ? Color_t(190, 190, 190, 255) : Color_t(255, 255, 255, 255));
 
-				Text_t &&text = Text_t(5, this->m_iH - (g_iBlockSize * (i + 1)) + this->m_iScrollage - iAnimY, std::move(this->m_deqConsoleBuffer[i]), pFont, 15.F, color);
+				const Text_t &text = Text_t(5, this->m_iH - (g_iBlockSize * (i + 1)) + this->m_iScrollage - iAnimY, std::move(this->m_deqConsoleBuffer[i]), pFont, 15.F, color);
 
 				//	Rendering optimization
 				if (text.m_iY < (-g_iBlockSize))
@@ -219,7 +219,7 @@ void Console_t::Draw(Drawing_t *pDraw) const
 				if (text.m_iY > this->m_iH + g_iBlockSize)
 					continue;
 
-				pDraw->Draw(std::move(text));
+				pDraw->Draw(text);
 			}
 
 			pDraw->PopClip();
@@ -228,21 +228,21 @@ void Console_t::Draw(Drawing_t *pDraw) const
 		//	Input Zone
 		const Color_t &color = this->m_bInputFocus ? Color_t(32, 32, 32, 142) : Color_t(18, 18, 18, 142);
 		const Color_t &textColor = this->m_bInputFocus ? Color_t(255, 255, 255, 255) : Color_t(190, 190, 190, 255);
-		pDraw->Draw(std::move(Rectangle_t(0, this->m_iH - iAnimY, iW, g_iBlockSize + 2, color)));
+		pDraw->Draw(Rectangle_t(0, this->m_iH - iAnimY, iW, g_iBlockSize + 2, color));
 
-		Text_t &&text = Text_t(5, this->m_iH + (g_iBlockSize / 2) - iAnimY, std::move(this->m_strInputBuffer), pFont, 15.F, textColor);
+		Text_t text = Text_t(5, this->m_iH + (g_iBlockSize / 2) - iAnimY, std::move(this->m_strInputBuffer), pFont, 15.F, textColor);
 		text.m_iY -= text.m_iH / 2;
 
 		int iOldW = text.m_iW;
 
-		pDraw->Draw(std::move(text));
+		pDraw->Draw(text);
 
 		//	Text Cursor
 		if (this->m_bInputFocus)
 		{
 			int iLevel = (g_iBlockSize - 6) / 2;
-			pDraw->Draw(std::move(RectangleGradient_t(6 + iOldW, this->m_iH + 4 - iAnimY, 1, iLevel, Color_t(255, 255, 255, 30), textColor, false)));
-			pDraw->Draw(std::move(RectangleGradient_t(6 + iOldW, this->m_iH + 4 + iLevel - iAnimY, 1, iLevel, textColor, Color_t(255, 255, 255, 30), false)));
+			pDraw->Draw(RectangleGradient_t(6 + iOldW, this->m_iH + 4 - iAnimY, 1, iLevel, Color_t(255, 255, 255, 30), textColor, false));
+			pDraw->Draw(RectangleGradient_t(6 + iOldW, this->m_iH + 4 + iLevel - iAnimY, 1, iLevel, textColor, Color_t(255, 255, 255, 30), false));
 		}
 
 		//	Input Buffer
@@ -258,15 +258,15 @@ void Console_t::Draw(Drawing_t *pDraw) const
 
 				const Color_t &color = Color_t(36 + iPad, 36 + iPad, 36 + iPad, 142);
 
-				Text_t &&text = Text_t(5, this->m_iH + g_iBlockSize + 2 + (g_iBlockSize * iCount) - iAnimY, std::move(first.first), pFont, 15.F, Color_t(255, 255, 255, 255));
+				Text_t text = Text_t(5, this->m_iH + g_iBlockSize + 2 + (g_iBlockSize * iCount) - iAnimY, std::move(first.first), pFont, 15.F, Color_t(255, 255, 255, 255));
 				text.m_iY += 1;
 
-				Text_t &&tag = Text_t(text.m_iX + text.m_iW + 10, text.m_iY - iAnimY, std::move(second.first ? "(Callback)" : "(Identifier)"), pFont, 15.F, Color_t(220, 220, 220, 255));
+				const Text_t &tag = Text_t(text.m_iX + text.m_iW + 10, text.m_iY - iAnimY, std::move(second.first ? "(Callback)" : "(Identifier)"), pFont, 15.F, Color_t(220, 220, 220, 255));
 
-				pDraw->Draw(std::move(Rectangle_t(0, this->m_iH + g_iBlockSize + 2 + (g_iBlockSize * iCount) - iAnimY, text.m_iW + tag.m_iW + 20, g_iBlockSize, color)));
+				pDraw->Draw(Rectangle_t(0, this->m_iH + g_iBlockSize + 2 + (g_iBlockSize * iCount) - iAnimY, text.m_iW + tag.m_iW + 20, g_iBlockSize, color));
 
-				pDraw->Draw(std::move(tag));
-				pDraw->Draw(std::move(text));
+				pDraw->Draw(tag);
+				pDraw->Draw(text);
 
 				++iCount;
 			}

@@ -34,7 +34,7 @@ void Drawing_t::UpdateIO(int iScreenW, int iScreenH)
  * @note: This procses leads to static dispatch.
  * 
  */
-void Drawing_t::Draw(Base_t &&renderable) const
+void Drawing_t::Draw(const Base_t &renderable) const
 {
 	renderable.Draw(this->m_pDrawList);
 }
@@ -115,12 +115,12 @@ void Drawing_t::PopClip() const
 
 void Drawing_t::AddQueue(Hash_t hKey, bool bAfter)
 {
-	this->m_umQueues[hKey] = std::make_pair(bAfter, std::move(Queue_t()));
+	this->m_umQueues[hKey] = std::make_pair(bAfter, Queue_t());
 }
 
 void Drawing_t::AddQueueLocked(Hash_t hKey, bool bAfter)
 {
-	this->m_umQueues[hKey] = std::make_pair(bAfter, std::move(Queue_t(&this->m_mutLock)));
+	this->m_umQueues[hKey] = std::make_pair(bAfter, Queue_t(&this->m_mutLock));
 }
 
 Queue_t &Drawing_t::GetQueue(Hash_t hKey)
