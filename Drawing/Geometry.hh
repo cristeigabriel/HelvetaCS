@@ -40,6 +40,14 @@ struct Base_t
 	Color_t m_Color = {};
 };
 
+struct BaseDoubleColor_t : public Base_t
+{
+	BaseDoubleColor_t() = default;
+	inline ~BaseDoubleColor_t(){};
+
+	Color_t m_SecondColor = {};
+};
+
 struct Rectangle_t final : public Base_t
 {
 	Rectangle_t() = default;
@@ -61,6 +69,17 @@ struct RectangleOutline_t final : public Base_t
 
 	int m_flRounding = 0.F;
 	float m_flThickness = 0.F;
+};
+
+struct RectangleGradient_t : public BaseDoubleColor_t
+{
+	RectangleGradient_t() = default;
+	RectangleGradient_t(int iX, int iY, int iW, int iH, const Color_t &color, const Color_t &secondColor, bool bHorizontal = false);
+	inline ~RectangleGradient_t(){};
+
+	void Draw(ImDrawList *) const override;
+
+	bool m_bHorizontal = false;
 };
 
 struct Line_t final : public Base_t

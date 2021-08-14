@@ -240,7 +240,11 @@ void Console_t::Draw(Drawing_t *pDraw) const
 
 		//	Text Cursor
 		if (this->m_bInputFocus)
-			pDraw->Draw(std::move(Rectangle_t(6 + iOldW, this->m_iH + 4 - iAnimY, 1, g_iBlockSize - 6, textColor)));
+		{
+			int iLevel = (g_iBlockSize - 6) / 2;
+			pDraw->Draw(std::move(RectangleGradient_t(6 + iOldW, this->m_iH + 4 - iAnimY, 1, iLevel, Color_t(255, 255, 255, 30), textColor, false)));
+			pDraw->Draw(std::move(RectangleGradient_t(6 + iOldW, this->m_iH + 4 + iLevel - iAnimY, 1, iLevel, textColor, Color_t(255, 255, 255, 30), false)));
+		}
 
 		//	Input Buffer
 		int iCount = 0;

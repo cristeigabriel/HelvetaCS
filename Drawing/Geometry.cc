@@ -44,6 +44,25 @@ void RectangleOutline_t::Draw(ImDrawList *pDraw) const
 	pDraw->AddRect(POSITION(this->m_iX, this->m_iY, this->m_iW, this->m_iH), IMVEC4_COLOR(this->m_Color), this->m_flRounding, 0, this->m_flThickness);
 }
 
+RectangleGradient_t::RectangleGradient_t(int iX, int iY, int iW, int iH, const Color_t &color, const Color_t &secondColor, bool bHorizontal)
+{
+	this->m_iX = iX;
+	this->m_iY = iY;
+	this->m_iW = iW;
+	this->m_iH = iH;
+	this->m_Color = color;
+	this->m_SecondColor = secondColor;
+	this->m_bHorizontal = bHorizontal;
+}
+
+void RectangleGradient_t::Draw(ImDrawList *pDraw) const
+{
+	if (this->m_bHorizontal)
+		pDraw->AddRectFilledMultiColor(POSITION(this->m_iX, this->m_iY, this->m_iW, this->m_iH), IMVEC4_COLOR(this->m_Color), IMVEC4_COLOR(this->m_SecondColor), IMVEC4_COLOR(this->m_SecondColor), IMVEC4_COLOR(this->m_Color));
+	else
+		pDraw->AddRectFilledMultiColor(POSITION(this->m_iX, this->m_iY, this->m_iW, this->m_iH), IMVEC4_COLOR(this->m_Color), IMVEC4_COLOR(this->m_Color), IMVEC4_COLOR(this->m_SecondColor), IMVEC4_COLOR(this->m_SecondColor));
+}
+
 Line_t::Line_t(int iX, int iY, int iX2, int iY2, const Color_t &color, float flThickness)
 {
 	this->m_iX = iX;
