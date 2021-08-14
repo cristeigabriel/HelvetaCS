@@ -132,7 +132,7 @@ struct CircleOutline_t final : public Base_t
 struct Text_t final : public Base_t
 {
 	Text_t() = default;
-	Text_t(int iX, int iY, const std::string_view strText, const ImFont *pFont, float flSize, const Color_t &color);
+	Text_t(int iX, int iY, std::string strText, const ImFont *pFont, float flSize, const Color_t &color);
 	inline ~Text_t(){};
 
 	void Draw(ImDrawList *) const override;

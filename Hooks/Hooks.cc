@@ -140,7 +140,7 @@ void Hooks::Bootstrap()
 	}
 
 	//	Menu, config, callbacks.
-	g_pConsole = std::make_unique<Console_t>("config.helveta");
+	g_pConsole = std::make_unique<Console_t>(std::move("config.helveta"));
 	{
 		g_pConsole->AddIdentifier("misc.no_duck_delay", false);
 		g_pConsole->AddIdentifier("misc.bunny_hop", false);
@@ -161,8 +161,8 @@ void Hooks::Bootstrap()
 										}
 									}
 
-									const std::string &strPresentationString = std::string("Unlocked " + std::to_string(iCount) + " Convars.");
-									pConsole->WriteToBuffer(strPresentationString);
+									std::string &&strPresentationString = std::string("Unlocked " + std::to_string(iCount) + " Convars.");
+									pConsole->WriteToBuffer(std::move(strPresentationString));
 									return true;
 								});
 
@@ -186,11 +186,11 @@ void Hooks::Bootstrap()
 									if (pConsole->m_vecCollection.empty())
 										return false;
 
-									pConsole->WriteToBuffer("- The following represents all the available help material");
+									pConsole->WriteToBuffer(std::move("- The following represents all the available help material"));
 									for (const auto &[first, second] : pConsole->m_vecCollection)
 									{
-										const std::string &strPresentationString = std::string(first.first + ": " + (second.first ? "Callback (command)" : "Identifier (value)"));
-										pConsole->WriteToBuffer(strPresentationString);
+										std::string &&strPresentationString = std::string(first.first + ": " + (second.first ? "Callback (command)" : "Identifier (value)"));
+										pConsole->WriteToBuffer(std::move(strPresentationString));
 									}
 
 									return true;

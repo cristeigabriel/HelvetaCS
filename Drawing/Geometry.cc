@@ -118,11 +118,11 @@ void CircleOutline_t::Draw(ImDrawList *pDraw) const
 	pDraw->AddCircle(IMVEC2(this->m_iCenterX, this->m_iCenterY), this->m_flRadius, IMVEC4_COLOR(this->m_Color), 0, this->m_flThickness);
 }
 
-Text_t::Text_t(int iX, int iY, const std::string_view strText, const ImFont *pFont, float flSize, const Color_t &color)
+Text_t::Text_t(int iX, int iY, std::string strText, const ImFont *pFont, float flSize, const Color_t &color)
 {
 	this->m_iX = iX;
 	this->m_iY = iY;
-	this->m_strText = strText;
+	this->m_strText = std::move(strText);
 	this->m_pFont = pFont;
 	this->m_flSize = flSize;
 
