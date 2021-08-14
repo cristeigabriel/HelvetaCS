@@ -36,7 +36,9 @@ namespace SDK
 	class IInputSystem;
 	class IVDebugOverlay;
 	class IVEngineClient;
-	
+
+	class ILocalize;
+
 	//	Likewise with typedefs.
 	using CreateClientClass = void *(__cdecl *)(int, int);
 	using CreateEvent = void *(__cdecl *)();

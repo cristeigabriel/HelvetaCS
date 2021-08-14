@@ -171,6 +171,8 @@ void Hooks::Bootstrap()
 		g_pConsole->AddIdentifier("esp.box_color", Color_t(255, 255, 255, 255));
 		g_pConsole->AddIdentifier("esp.name", false);
 		g_pConsole->AddIdentifier("esp.name_color", Color_t(255, 255, 255, 255));
+		g_pConsole->AddIdentifier("esp.weapon", false);
+		g_pConsole->AddIdentifier("esp.weapon_color", Color_t(255, 255, 255, 255));
 
 		g_pConsole->AddCallback("config.save", [](Console_t *pConsole)
 								{

@@ -5,4 +5,5 @@
 class CBaseEntity;
 class CBasePlayer;
 class CCSPlayer;
+class CBaseCombatWeapon;
 struct EntityCacher_t;

@@ -31,6 +31,7 @@ struct Memory_t
 	SDK::IInputSystem *m_pInputSystem;
 	SDK::IVDebugOverlay *m_pDebugOverlay;
 	SDK::IVEngineClient *m_pEngineClient;
+	SDK::ILocalize *m_pVGUILocalize;
 
 	Cvars_t m_Cvars;
 

@@ -5,8 +5,10 @@
 #include "../SDK/CUserCmd.hh"
 #include "../SDK/IVDebugOverlay.hh"
 #include "../SDK/IVEngineClient.hh"
+#include "../SDK/ILocalize.hh"
 
 #include "../Entities/CCSPlayer.hh"
+#include "../Entities/CBaseCombatWeapon.hh"
 #include "../Entities/Cacher.hh"
 
 #include "../Console/Console.hh"
@@ -101,6 +103,7 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 
 	COLOR_GET(boxColor, "esp.box_color");
 	COLOR_GET(nameColor, "esp.name_color");
+	COLOR_GET(weaponColor, "esp.weapon_color");
 
 	g_pEntityCache->Loop([&](CCSPlayer *pPl)
 						 {
@@ -132,6 +135,15 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 										 text->m_iY -= text->m_iH;
 										 pQueue->Push(std::move(text));
 									 }
+
+									 if (BOOL_GET(bRef, "esp.weapon"); bRef)
+										 if (CBaseCombatWeapon *pWeapon = pPl->GetActiveWeapon(); pWeapon)
+											 if (CCSWeaponInfo *pWeaponInfo = pWeapon->GetWeaponInfo(); pWeaponInfo)
+											 {
+												 std::shared_ptr<Text_t> &&text = std::make_shared<Text_t>(vecPosition[0] + vecPosition[2] / 2, vecPosition[1] + vecPosition[3] + 2, std::move(std::string{g_pMemory->m_pVGUILocalize->Find(pWeaponInfo->m_szLocalizeToken)}), pFont, 15.F, weaponColor.ModifyA(animator.Get()));
+												 text->m_iX -= text->m_iW / 2;
+												 pQueue->Push(std::move(text));
+											 }
 								 }
 							 }
 						 });

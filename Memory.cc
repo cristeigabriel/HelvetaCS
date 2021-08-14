@@ -56,6 +56,7 @@ Memory_t::Memory_t() : m_Client("client.dll"), m_Engine("engine.dll"), m_GameOve
 	ADDRSET_PAD(this->m_pInputSystem, SDK::IInputSystem ***, 1, **this->m_Client.FindString<"InputSystemVersion001", true>().FollowUntil(0xA3, true));
 	ADDRSET_PAD(this->m_pDebugOverlay, SDK::IVDebugOverlay ***, 1, **this->m_Client.FindString<"VDebugOverlay004", false>().FollowUntil(0xA3, true));
 	ADDRSET_PAD(this->m_pEngineClient, SDK::IVEngineClient ***, 1, **this->m_Client.FindString<"VEngineClient014", true>(0xFF).FollowUntil(0xA3, true));
+	ADDRSET_PAD(this->m_pVGUILocalize, SDK::ILocalize ***, 1, **this->m_Engine.FindString<"g_pVGuiLocalize->AddFile", false>().FollowUntil(0x0D, true));
 
 	SET(this->m_Cvars.cl_updaterate, FindConvar<"cl_updaterate", true>(this->m_Engine));
 	SET(this->m_Cvars.cl_cmdrate, FindConvar<"cl_cmdrate", true>(this->m_Engine));
