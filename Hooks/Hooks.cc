@@ -77,8 +77,8 @@ void __stdcall LevelInitPreEntity::Hooked(const char *szName)
 {
 	float flTickrate = 1.F / g_pMemory->m_pGlobalVars->m_flIntervalPerTick;
 
-	g_pMemory->m_Cvars.cl_cmdrate->SetValue(flTickrate);
-	g_pMemory->m_Cvars.cl_updaterate->SetValue(flTickrate);
+	g_pMemory->m_CVars.cl_cmdrate->SetValue(flTickrate);
+	g_pMemory->m_CVars.cl_updaterate->SetValue(flTickrate);
 
 	g_pEntityCache->Reset();
 	Features::g_Visuals.Reset();

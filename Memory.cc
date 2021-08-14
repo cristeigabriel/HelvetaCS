@@ -17,7 +17,7 @@
 //	========================================================================================================================================
 
 template <Helveta::CompileTimeString_t Str, bool ServerBounded = false>
-static SDK::ConVar *FindConvar(const Memory::Dll_t &module)
+static SDK::ConVar *FindConVar(const Memory::Dll_t &module)
 {
 	uintptr_t uptrString = module.FindPattern(CAST_ARRAY(int, FOLD_LITERALS_INTO_ARRAY(Str.m_szData)), 0u, HASH(".rdata")).Get();
 	const std::array<int, 4> &rgReversedString = RT_CAST_ARRAY(int, Helveta::detail::ToArray32bit(Helveta::detail::EndiannessSwap32bit(uptrString)));
@@ -58,8 +58,8 @@ Memory_t::Memory_t() : m_Client("client.dll"), m_Engine("engine.dll"), m_GameOve
 	ADDRSET_PAD(this->m_pEngineClient, SDK::IVEngineClient ***, 1, **this->m_Client.FindString<"VEngineClient014", true>(0xFF).FollowUntil(0xA3, true));
 	ADDRSET_PAD(this->m_pVGUILocalize, SDK::ILocalize ***, 1, **this->m_Engine.FindString<"g_pVGuiLocalize->AddFile", false>().FollowUntil(0x0D, true));
 
-	SET(this->m_Cvars.cl_updaterate, FindConvar<"cl_updaterate", true>(this->m_Engine));
-	SET(this->m_Cvars.cl_cmdrate, FindConvar<"cl_cmdrate", true>(this->m_Engine));
+	SET(this->m_CVars.cl_updaterate, FindConVar<"cl_updaterate", true>(this->m_Engine));
+	SET(this->m_CVars.cl_cmdrate, FindConVar<"cl_cmdrate", true>(this->m_Engine));
 
 	ADDRSET_PAD(this->m_ppLocal, CCSPlayer ***, 1, *this->m_Client.FindString<"No local player %d after full frame update\n", false>().FollowUntil(0x3D, false));
 }

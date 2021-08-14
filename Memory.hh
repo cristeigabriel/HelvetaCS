@@ -7,7 +7,7 @@
 #include <d3d9.h>
 #include <cassert>
 
-struct Cvars_t
+struct CVars_t
 {
 	SDK::ConVar *cl_updaterate;
 	SDK::ConVar *cl_cmdrate;
@@ -33,7 +33,7 @@ struct Memory_t
 	SDK::IVEngineClient *m_pEngineClient;
 	SDK::ILocalize *m_pVGUILocalize;
 
-	Cvars_t m_Cvars;
+	CVars_t m_CVars;
 
 	CCSPlayer *LocalPlayer() const;
 
