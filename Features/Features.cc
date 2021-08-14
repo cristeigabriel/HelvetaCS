@@ -66,10 +66,10 @@ static bool ComputeBoundingBox(CCSPlayer *pPl, Vector_t<int>::V4 &vecOut)
 
 	float flLeft = rgScreen[3][0];
 	float flRight = rgScreen[3][0];
-	float flBottom = rgScreen[3][1];
 	float flTop = rgScreen[3][1];
+	float flBottom = rgScreen[3][1];
 
-	for (int i = 0; i < 8; ++i)
+	for (int i = 1; i < 8; ++i)
 	{
 		if (flLeft > rgScreen[i][0])
 			flLeft = rgScreen[i][0];
