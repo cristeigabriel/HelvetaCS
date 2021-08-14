@@ -10,7 +10,7 @@
 #include <corecrt_math_defines.h>
 #include <array>
 #include <algorithm>
-#include <source_location>
+#include <compare>
 
 namespace Helveta
 {
@@ -444,12 +444,14 @@ namespace Helveta
 
 			explicit Make() = default;
 
-			void Initialize(const Args &...args)
+			constexpr auto operator<=>(const Make &) const = default;
+
+			constexpr void Initialize(const Args &...args)
 			{
 				this->m_rgContents = Pack{{args...}};
 			}
 
-			explicit Make(const Args &...args)
+			explicit constexpr Make(const Args &...args)
 			{
 				Initialize(args...);
 			}
@@ -459,7 +461,7 @@ namespace Helveta
 				return m_nPackLen;
 			}
 
-			const T &operator[](size_t i) const
+			constexpr T &operator[](size_t i) const
 			{
 				return this->m_rgContents[i];
 			}
@@ -481,7 +483,7 @@ namespace Helveta
 				return operator[](i);
 			}
 
-			const Pack &Raw() const
+			constexpr Pack &Raw() const
 			{
 				return this->m_rgContents;
 			}
