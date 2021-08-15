@@ -193,7 +193,7 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 										 if (g_iMouseX >= iX && g_iMouseY >= iY && g_iMouseX <= (iX + iW) && g_iMouseY <= (iY + iH))
 										 {
 											 std::shared_ptr<Text_t> &&text = std::make_shared<Text_t>(iX + iW / 2, iY + iH + 2, std::move(std::string(playerInfo.m_szName) + " " + std::to_string(entry.m_flFinishTime - g_pMemory->m_pGlobalVars->m_flCurTime)), pFont, 15.F, color);
-											 std::shared_ptr<Text_t> &&location = std::make_shared<Text_t>(text->m_iX, text->m_iY + text->m_iH + 2, std::string{pPl->m_szLastPlaceName()}, pFont, 15.F, color);
+											 std::shared_ptr<Text_t> &&location = std::make_shared<Text_t>(text->m_iX, text->m_iY + text->m_iH + 2, std::move(entry.m_strLocation + " -> " + std::string{pPl->m_szLastPlaceName()}), pFont, 15.F, color);
 											 text->m_iX -= text->m_iW / 2;
 											 location->m_iX -= location->m_iW / 2;
 											 pQueue->Push(std::move(text));
@@ -217,6 +217,6 @@ void Features::Visuals_t::AddFootstep(CBasePlayer *pPl, const Vector_t<float>::V
 		{
 			std::unique_lock<std::mutex> lock(this->m_mutFootsteps);
 
-			this->m_umFootstepsVec[pPl->Networkable()->Index()].emplace_back(vecOrigin, g_pMemory->m_pGlobalVars->m_flCurTime + 3.F, 255);
+			this->m_umFootstepsVec[pPl->Networkable()->Index()].emplace_back(vecOrigin, std::string{pPl->m_szLastPlaceName()}, g_pMemory->m_pGlobalVars->m_flCurTime + 3.F, 255);
 		}
 }
