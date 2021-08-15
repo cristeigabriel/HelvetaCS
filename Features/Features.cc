@@ -123,37 +123,41 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 									 if (deqFootsteps.empty())
 										 return;
 
-									 for (const auto &entry : deqFootsteps)
+									 std::unique_lock<std::mutex> lock(this->m_mutFootsteps);
+
+									 for (auto &entry : deqFootsteps)
 									 {
-										 Vector_t<float>::V3 vecScreenPosition;
-										 if (g_pMemory->m_pDebugOverlay->ScreenPosition(&entry.m_vecPosition, &vecScreenPosition))
-											 continue;
+										 entry.m_Animation.Set(entry.m_flFinishTime > g_pMemory->m_pGlobalVars->m_flCurTime, Animation_t{3.F, Easing::OutQuart}, Animation_t{3.F, Easing::OutQuart});
 
-										 int iX = (int)vecScreenPosition[0] - 5;
-										 int iY = (int)vecScreenPosition[1] - 5;
-										 constexpr int iW = 10;
-										 constexpr int iH = 10;
-
-										 pQueue->Push(std::move(std::make_shared<RectangleOutline_t>(iX, iY, iW, iH, footstepsColor)));
-
-										 //	If within boundaries
-										 if (g_iMouseX >= iX && g_iMouseY >= iY && g_iMouseX <= (iX + iW) && g_iMouseY <= (iY + iH))
+										 if (entry.m_Animation.Get() > 0.F)
 										 {
-											 std::shared_ptr<Text_t> &&text = std::make_shared<Text_t>(iX + iW / 2, iY + iH + 2, std::move(std::string(playerInfo.m_szName) + " " + std::to_string(entry.m_flFinishTime - g_pMemory->m_pGlobalVars->m_flCurTime)), pFont, 15.F, footstepsColor);
-											 std::shared_ptr<Text_t> &&location = std::make_shared<Text_t>(text->m_iX, text->m_iY + text->m_iH + 2, std::move(entry.m_strLocation + " -> " + std::string{pPl->m_szLastPlaceName()}), pFont, 15.F, footstepsColor);
-											 text->m_iX -= text->m_iW / 2;
-											 location->m_iX -= location->m_iW / 2;
-											 pQueue->Push(std::move(text));
-											 pQueue->Push(std::move(location));
+											 Vector_t<float>::V3 vecScreenPosition;
+											 if (g_pMemory->m_pDebugOverlay->ScreenPosition(&entry.m_vecPosition, &vecScreenPosition))
+												 continue;
+
+											 int iX = (int)vecScreenPosition[0] - 5;
+											 int iY = (int)vecScreenPosition[1] - 5;
+											 constexpr int iW = 10;
+											 constexpr int iH = 10;
+
+											 const Color_t &color = footstepsColor.ModifyA(entry.m_Animation.Get());
+											 pQueue->Push(std::move(std::make_shared<RectangleOutline_t>(iX, iY, iW, iH, color)));
+
+											 //	If within boundaries
+											 if (g_iMouseX >= iX && g_iMouseY >= iY && g_iMouseX <= (iX + iW) && g_iMouseY <= (iY + iH))
+											 {
+												 std::shared_ptr<Text_t> &&text = std::make_shared<Text_t>(iX + iW / 2, iY + iH + 2, std::move(std::string(playerInfo.m_szName) + " " + std::to_string(entry.m_flFinishTime - g_pMemory->m_pGlobalVars->m_flCurTime)), pFont, 15.F, color);
+												 std::shared_ptr<Text_t> &&location = std::make_shared<Text_t>(text->m_iX, text->m_iY + text->m_iH + 2, std::move(entry.m_strLocation + " -> " + std::string{pPl->m_szLastPlaceName()}), pFont, 15.F, color);
+												 text->m_iX -= text->m_iW / 2;
+												 location->m_iX -= location->m_iW / 2;
+												 pQueue->Push(std::move(text));
+												 pQueue->Push(std::move(location));
+											 }
 										 }
 									 }
 
-									 if (deqFootsteps.back().m_flFinishTime < g_pMemory->m_pGlobalVars->m_flCurTime)
-									 {
-										 std::unique_lock<std::mutex> lock(this->m_mutFootsteps);
-
+									 if (deqFootsteps.back().m_Animation.Get() <= 0.F)
 										 deqFootsteps.pop_back();
-									 }
 								 }
 
 							 if (!pPl->Alive())
@@ -209,6 +213,6 @@ void Features::Visuals_t::AddFootstep(CBasePlayer *pPl, const Vector_t<float>::V
 		{
 			std::unique_lock<std::mutex> lock(this->m_mutFootsteps);
 
-			this->m_umFootstepsDeq[pPl->Networkable()->Index()].emplace_front(vecOrigin, std::string{pPl->m_szLastPlaceName()}, g_pMemory->m_pGlobalVars->m_flCurTime + iFootstepTime, 255);
+			this->m_umFootstepsDeq[pPl->Networkable()->Index()].emplace_front(vecOrigin, std::string{pPl->m_szLastPlaceName()}, g_pMemory->m_pGlobalVars->m_flCurTime + iFootstepTime, Animator_t{});
 		}
 }
