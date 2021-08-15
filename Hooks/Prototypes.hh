@@ -34,4 +34,5 @@ PROTOTYPE(OnRemoveEntity, void(__fastcall *)(void *, void *, void *, int));
 PROTOTYPE(LevelInitPreEntity, void(__stdcall *)(const char *));
 PROTOTYPE(LevelInitPostEntity, void(__cdecl *)());
 PROTOTYPE(CreateMove, bool(__stdcall *)(float, SDK::CUserCmd *));
+PROTOTYPE(PlayStepSound, void(__fastcall *)(CCSPlayer *, void *, Vector_t<float>::V3 &, void *, float, bool, void*));
 //	========================================================================================================================================

@@ -3,6 +3,7 @@
 
 #include "../SDK/Constants.hh"
 #include "../SDK/CUserCmd.hh"
+#include "../SDK/CGlobalVarsBase.hh"
 #include "../SDK/IVDebugOverlay.hh"
 #include "../SDK/IVEngineClient.hh"
 #include "../SDK/ILocalize.hh"
@@ -14,6 +15,8 @@
 #include "../Console/Console.hh"
 
 #include "../Drawing/Drawing.hh"
+
+#include "../Globals/Globals.hh"
 
 static inline bool ValidMoveType()
 {
@@ -104,10 +107,15 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 	COLOR_GET(boxColor, "esp.box_color");
 	COLOR_GET(nameColor, "esp.name_color");
 	COLOR_GET(weaponColor, "esp.weapon_color");
+	COLOR_GET(footstepsColor, "esp.footsteps_color");
 
 	g_pEntityCache->Loop([&](CCSPlayer *pPl)
 						 {
 							 if (!pPl->Alive())
+								 return;
+
+							 PlayerInfo_t playerInfo;
+							 if (!g_pMemory->m_pEngineClient->GetPlayerInfo(pPl->Networkable()->Index(), &playerInfo))
 								 return;
 
 							 Animator_t &animator = this->m_umAlpha[pPl->Networkable()->Index()];
@@ -115,10 +123,6 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 
 							 if (animator.Get() > 0.F)
 							 {
-								 PlayerInfo_t playerInfo;
-								 if (!g_pMemory->m_pEngineClient->GetPlayerInfo(pPl->Networkable()->Index(), &playerInfo))
-									 return;
-
 								 Vector_t<int>::V4 vecPosition;
 								 if (ComputeBoundingBox(pPl, vecPosition) && vecPosition.IsValid())
 								 {
@@ -146,10 +150,73 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 											 }
 								 }
 							 }
+
+							 if (BOOL_GET(bRef, "esp.footsteps"); bRef)
+
+								 if (this->m_umFootstepsVec.contains(pPl->Networkable()->Index()))
+								 {
+									 std::vector<Footstep_t> &footstep = this->m_umFootstepsVec[pPl->Networkable()->Index()];
+
+									 //	Deliberately not using iterators...
+									 for (size_t i = 0; i < footstep.size(); ++i)
+									 {
+										 auto &entry = footstep[i];
+
+										 bool bExpired = g_pMemory->m_pGlobalVars->m_flCurTime > entry.m_flFinishTime;
+										 if (bExpired)
+										 {
+											 --entry.m_iAlpha;
+
+											 if (entry.m_iAlpha <= 0)
+											 {
+												 std::unique_lock<std::mutex> lock(this->m_mutFootsteps);
+
+												 footstep.erase(footstep.begin() + i);
+												 continue;
+											 }
+										 }
+
+										 Vector_t<float>::V3 vecScreenPosition;
+										 if (g_pMemory->m_pDebugOverlay->ScreenPosition(&entry.m_vecPosition, &vecScreenPosition))
+											 continue;
+
+										 int iX = (int)vecScreenPosition[0] - 5;
+										 int iY = (int)vecScreenPosition[1] - 5;
+										 constexpr int iW = 10;
+										 constexpr int iH = 10;
+
+										 Color_t color = footstepsColor;
+										 color.m_u8A = min(footstepsColor.m_u8A, entry.m_iAlpha);
+										 pQueue->Push(std::move(std::make_shared<RectangleOutline_t>(iX, iY, iW, iH, color)));
+
+										 //	If within boundaries
+										 if (g_iMouseX >= iX && g_iMouseY >= iY && g_iMouseX <= (iX + iW) && g_iMouseY <= (iY + iH))
+										 {
+											 std::shared_ptr<Text_t> &&text = std::make_shared<Text_t>(iX + iW / 2, iY + iH + 2, std::move(std::string(playerInfo.m_szName) + " " + std::to_string(entry.m_flFinishTime - g_pMemory->m_pGlobalVars->m_flCurTime)), pFont, 15.F, color);
+											 std::shared_ptr<Text_t> &&location = std::make_shared<Text_t>(text->m_iX, text->m_iY + text->m_iH + 2, std::string{pPl->m_szLastPlaceName()}, pFont, 15.F, color);
+											 text->m_iX -= text->m_iW / 2;
+											 location->m_iX -= location->m_iW / 2;
+											 pQueue->Push(std::move(text));
+											 pQueue->Push(std::move(location));
+										 }
+									 }
+								 }
 						 });
 }
 
 void Features::Visuals_t::Reset()
 {
 	this->m_umAlpha.clear();
+	this->m_umFootstepsVec.clear();
+}
+
+void Features::Visuals_t::AddFootstep(CBasePlayer *pPl, const Vector_t<float>::V3 &vecOrigin)
+{
+	if (BOOL_GET(bRef, "esp.footsteps"); bRef)
+		if (pPl && !pPl->Networkable()->IsDormant() && vecOrigin.IsValid() && pPl->Networkable()->Index() >= 1 && pPl->Networkable()->Index() <= 64)
+		{
+			std::unique_lock<std::mutex> lock(this->m_mutFootsteps);
+
+			this->m_umFootstepsVec[pPl->Networkable()->Index()].emplace_back(vecOrigin, g_pMemory->m_pGlobalVars->m_flCurTime + 3.F, 255);
+		}
 }

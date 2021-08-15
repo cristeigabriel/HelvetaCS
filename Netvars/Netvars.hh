@@ -4,6 +4,7 @@
 #include "../Helpers/Helpers.hh"
 #include <memory>
 #include <unordered_map>
+#include <type_traits>
 
 struct Netvars_t
 {
@@ -75,6 +76,14 @@ private:
 	{                                                                            \
 		static ptrdiff_t CONCAT(x, _ptrdiff) = g_pNetvars->Get(hHash, HASH(#x)); \
 		return *(GET_TYPE(#x) *)((uintptr_t)this + CONCAT(x, _ptrdiff));         \
+	}
+
+#define PNETWORKED_VARIABLE_DEDUCE(x)                                            \
+	GET_TYPE(#x)                                                                 \
+	x()                                                                          \
+	{                                                                            \
+		static ptrdiff_t CONCAT(x, _ptrdiff) = g_pNetvars->Get(hHash, HASH(#x)); \
+		return (GET_TYPE(#x))((uintptr_t)this + CONCAT(x, _ptrdiff));            \
 	}
 
 #define NETWORKED_VARIABLE_DEDUCE_NN(x)                                          \

@@ -21,8 +21,13 @@
 
 #include "../Resources/Terminus.hh"
 
+#include <windowsx.h>
 #include <WinUser.h>
 #include <iomanip>
+
+#include "../Globals/Globals.hh"
+int ::g_iMouseX = 0;
+int ::g_iMouseY = 0;
 
 HRESULT __fastcall EndScene::Hooked(void *pThisPtr, void *pEdx, IDirect3DDevice9 *pDevice)
 {
@@ -34,6 +39,12 @@ HRESULT __fastcall EndScene::Hooked(void *pThisPtr, void *pEdx, IDirect3DDevice9
 
 LRESULT WINAPI WndProc::Hooked(HWND hwndWindow, UINT u32Msg, WPARAM wParam, LPARAM lParam)
 {
+	if (u32Msg == WM_MOUSEMOVE)
+	{
+		g_iMouseX = GET_X_LPARAM(lParam);
+		g_iMouseY = GET_Y_LPARAM(lParam);
+	}
+
 	g_pConsole->WndProc(u32Msg, wParam);
 
 	//	Implementing cheat context to framework feels like a dirty thing to consider, to me
@@ -108,6 +119,12 @@ bool __stdcall CreateMove::Hooked(float flSampleTime, SDK::CUserCmd *pCmd)
 	return false;
 }
 
+void __fastcall PlayStepSound::Hooked(CCSPlayer *pThisPtr, void *pEdx, Vector_t<float>::V3 &vecOrigin, void *pSurface, float flVolume, bool bForce, void *pArg)
+{
+	Features::g_Visuals.AddFootstep(pThisPtr, vecOrigin);
+	Original(pThisPtr, pEdx, vecOrigin, pSurface, flVolume, bForce, pArg);
+}
+
 /**
  * @brief Utility Macros
  * 
@@ -173,6 +190,8 @@ void Hooks::Bootstrap()
 		g_pConsole->AddIdentifier("esp.name_color", Color_t(255, 255, 255, 255));
 		g_pConsole->AddIdentifier("esp.weapon", false);
 		g_pConsole->AddIdentifier("esp.weapon_color", Color_t(255, 255, 255, 255));
+		g_pConsole->AddIdentifier("esp.footsteps", false);
+		g_pConsole->AddIdentifier("esp.footsteps_color", Color_t(255, 255, 255, 255));
 
 		g_pConsole->AddCallback("config.save", [](Console_t *pConsole)
 								{
@@ -214,4 +233,5 @@ void Hooks::Bootstrap()
 	HOOK(LevelInitPreEntity, levelInitPrePost.FollowUntil(0x55, false));
 	HOOK(LevelInitPostEntity, levelInitPrePost.FollowUntil(0x55, true));
 	HOOK(CreateMove, g_pMemory->m_Client.FindPattern(STB("55 8B EC 8B 0D ? ? ? ? 85 C9 75 06")));
+	HOOK(PlayStepSound, g_pMemory->m_Client.FindString<"ct_%s", false>().FollowUntil(0x55, false));
 }
