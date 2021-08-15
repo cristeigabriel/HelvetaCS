@@ -191,6 +191,7 @@ void Hooks::Bootstrap()
 		g_pConsole->AddIdentifier("esp.weapon", false);
 		g_pConsole->AddIdentifier("esp.weapon_color", Color_t(255, 255, 255, 255));
 		g_pConsole->AddIdentifier("esp.footsteps", false);
+		g_pConsole->AddIdentifier("esp.footsteps_time", 3);
 		g_pConsole->AddIdentifier("esp.footsteps_color", Color_t(255, 255, 255, 255));
 
 		g_pConsole->AddCallback("config.save", [](Console_t *pConsole)

@@ -5,6 +5,7 @@
 #include "../Animator/Animator.hh"
 #include <mutex>
 #include <unordered_map>
+#include <deque>
 
 struct Queue_t;
 
@@ -36,6 +37,6 @@ namespace Features
 	private:
 		//	Avoid parallel writing/reading during work possible issues
 		std::mutex m_mutFootsteps;
-		std::unordered_map<int, std::vector<Footstep_t>> m_umFootstepsVec;
+		std::unordered_map<int, std::deque<Footstep_t>> m_umFootstepsDeq;
 	} inline g_Visuals;
 }
