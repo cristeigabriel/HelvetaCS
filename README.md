@@ -1,5 +1,4 @@
 # Helveta
- 
 Counter-Strike: Global Offensive Cheat base written in and with C++20 concepts.
 
 # Features
@@ -27,4 +26,4 @@ I, the author, personally use the following:
 With the aforementioned, what's left to do is to prompt the CMake plugin to set up its environment in the IDE, and offer me utilities or specific IDE configuration edits according to my current ones in comparassion to the project's, then pressing 'Build'.
 
 # Licensing
-WTFPL, available in the LICENSE file
+WTFPL, available in the [LICENSE](https://github.com/cristeigabriel/HelvetaCS/blob/main/LICENSE) file.
