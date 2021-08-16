@@ -178,8 +178,7 @@ void Hooks::Bootstrap()
 										}
 									}
 
-									std::string &&strPresentationString = std::string("Unlocked " + std::to_string(iCount) + " Convars.");
-									pConsole->WriteToBuffer(std::move(strPresentationString));
+									pConsole->WriteToBuffer(std::move("Unlocked " + std::to_string(iCount) + " Convars."));
 									return true;
 								});
 
@@ -211,8 +210,7 @@ void Hooks::Bootstrap()
 									pConsole->WriteToBuffer(std::move("- The following represents all the available help material"));
 									for (const auto &[first, second] : pConsole->m_vecCollection)
 									{
-										std::string &&strPresentationString = std::string(first.first + ": " + (second.first ? "Callback (command)" : "Identifier (value)"));
-										pConsole->WriteToBuffer(std::move(strPresentationString));
+										pConsole->WriteToBuffer(std::move(first.first + ": " + (second.first ? "Callback (command)" : "Identifier (value)")));
 									}
 
 									return true;

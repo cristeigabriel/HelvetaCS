@@ -323,8 +323,7 @@ void Console_t::ProcessBuffer()
 	const Hash_t hHash = RT_HASH(strValidatedComputeString.data());
 	if (this->m_umCallbacks.contains(hHash))
 	{
-		std::string &&strPresentationString = std::string("> " + this->m_strInputBuffer);
-		WriteToBuffer(std::move(strPresentationString));
+		WriteToBuffer(std::move("> " + this->m_strInputBuffer));
 
 		//	Execute callback
 		bool bState = this->m_umCallbacks[hHash](this);
@@ -341,19 +340,16 @@ void Console_t::ProcessBuffer()
 		{
 			if (std::holds_alternative<bool>(identifierValue))
 			{
-				std::string &&strPresentationString = std::string(strValidatedComputeString + ": " + (std::get<bool>(identifierValue) ? "true" : "false"));
-				WriteToBuffer(std::move(strPresentationString));
+				WriteToBuffer(std::move(strValidatedComputeString + ": " + (std::get<bool>(identifierValue) ? "true" : "false")));
 			}
 			else if (std::holds_alternative<int>(identifierValue))
 			{
-				std::string &&strPresentationString = std::string(strValidatedComputeString + ": " + std::to_string(std::get<int>(identifierValue)));
-				WriteToBuffer(std::move(strPresentationString));
+				WriteToBuffer(std::move(strValidatedComputeString + ": " + std::to_string(std::get<int>(identifierValue))));
 			}
 			else if (std::holds_alternative<Color_t>(identifierValue))
 			{
 				const Color_t &colIdentifierValue = std::get<Color_t>(identifierValue);
-				std::string &&strPresentationString = std::string(strValidatedComputeString + ": (" + std::to_string(colIdentifierValue.m_u8R) + ", " + std::to_string(colIdentifierValue.m_u8G) + ", " + std::to_string(colIdentifierValue.m_u8B) + ", " + std::to_string(colIdentifierValue.m_u8A) + ")");
-				WriteToBuffer(std::move(strPresentationString));
+				WriteToBuffer(std::move(strValidatedComputeString + ": (" + std::to_string(colIdentifierValue.m_u8R) + ", " + std::to_string(colIdentifierValue.m_u8G) + ", " + std::to_string(colIdentifierValue.m_u8B) + ", " + std::to_string(colIdentifierValue.m_u8A) + ")"));
 			}
 		}
 		//	Identifier found, spacing found
@@ -371,15 +367,13 @@ void Console_t::ProcessBuffer()
 			{
 				identifierValue = !!min(std::atoi(strDeducedValue.c_str()), 1);
 
-				std::string &&strPresentationString = std::string(strValidatedComputeString + " -> " + (std::get<bool>(identifierValue) ? "true" : "false"));
-				WriteToBuffer(std::move(strPresentationString));
+				WriteToBuffer(std::move(strValidatedComputeString + " -> " + (std::get<bool>(identifierValue) ? "true" : "false")));
 			}
 			else if (std::holds_alternative<int>(identifierValue))
 			{
 				identifierValue = std::atoi(strDeducedValue.c_str());
 
-				std::string &&strPresentationString = std::string(strValidatedComputeString + " -> " + std::to_string(std::get<int>(identifierValue)));
-				WriteToBuffer(std::move(strPresentationString));
+				WriteToBuffer(std::move(strValidatedComputeString + " -> " + std::to_string(std::get<int>(identifierValue))));
 			}
 			//	HAX ALERT WEEWOOWEEEWOOO
 			else if (std::holds_alternative<Color_t>(identifierValue))
@@ -395,16 +389,14 @@ void Console_t::ProcessBuffer()
 				*(uint32_t *)(&std::get<Color_t>(identifierValue)) = Helveta::detail::EndiannessSwap32bit(u32Value);
 
 				const Color_t &colIdentifierValue = std::get<Color_t>(identifierValue);
-				std::string &&strPresentationString = std::string(strValidatedComputeString + " -> (" + std::to_string(colIdentifierValue.m_u8R) + ", " + std::to_string(colIdentifierValue.m_u8G) + ", " + std::to_string(colIdentifierValue.m_u8B) + ", " + std::to_string(colIdentifierValue.m_u8A) + ")");
-				WriteToBuffer(std::move(strPresentationString));
+				WriteToBuffer(std::move(strValidatedComputeString + " -> (" + std::to_string(colIdentifierValue.m_u8R) + ", " + std::to_string(colIdentifierValue.m_u8G) + ", " + std::to_string(colIdentifierValue.m_u8B) + ", " + std::to_string(colIdentifierValue.m_u8A) + ")"));
 			}
 		}
 	}
 	else
 	{
 	ERROR_LABEL:
-		std::string &&strErrorString = std::string("!Failed executing the following: \"" + this->m_strInputBuffer + "\".");
-		WriteToBuffer(std::move(strErrorString));
+		WriteToBuffer(std::move("!Failed executing the following: \"" + this->m_strInputBuffer + "\"."));
 	}
 
 	this->m_strInputBuffer.clear();
