@@ -112,9 +112,45 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 
 	g_pEntityCache->Loop([&](CCSPlayer *pPl)
 						 {
-							 PlayerInfo_t playerInfo;
-							 if (!g_pMemory->m_pEngineClient->GetPlayerInfo(pPl->Networkable()->Index(), &playerInfo))
+							 if (!pPl->Alive())
 								 return;
+
+							 Animator_t &animator = this->m_umAlpha[pPl->Networkable()->Index()];
+							 animator.Set(!pPl->Networkable()->IsDormant(), Animation_t{3.F, Easing::OutQuart}, Animation_t{3.F, Easing::OutQuart});
+
+							 if (animator.Get() > 0.F)
+							 {
+								 PlayerInfo_t playerInfo;
+								 if (!g_pMemory->m_pEngineClient->GetPlayerInfo(pPl->Networkable()->Index(), &playerInfo))
+									 return;
+
+								 Vector_t<int>::V4 vecPosition;
+								 if (ComputeBoundingBox(pPl, vecPosition))
+								 {
+									 if (BOOL_GET(bRef, "esp.y_animation"); bRef)
+										 vecPosition[1] += 16 - (16 * animator.Get());
+
+									 if (BOOL_GET(bRef, "esp.box"); bRef)
+										 pQueue->Push(std::move(std::make_shared<RectangleOutline_t>(vecPosition[0], vecPosition[1], vecPosition[2], vecPosition[3], boxColor.ModifyA(animator.Get()))));
+
+									 if (BOOL_GET(bRef, "esp.name"); bRef)
+									 {
+										 std::shared_ptr<Text_t> &&text = std::make_shared<Text_t>(vecPosition[0] + vecPosition[2] / 2, vecPosition[1] - 2, std::move(std::string{playerInfo.m_szName}), pFont, 15.F, nameColor.ModifyA(animator.Get()));
+										 text->m_iX -= text->m_iW / 2;
+										 text->m_iY -= text->m_iH;
+										 pQueue->Push(std::move(text));
+									 }
+
+									 if (BOOL_GET(bRef, "esp.weapon"); bRef)
+										 if (CBaseCombatWeapon *pWeapon = pPl->GetActiveWeapon(); pWeapon)
+											 if (CCSWeaponInfo *pWeaponInfo = pWeapon->GetWeaponInfo(); pWeaponInfo)
+											 {
+												 std::shared_ptr<Text_t> &&text = std::make_shared<Text_t>(vecPosition[0] + vecPosition[2] / 2, vecPosition[1] + vecPosition[3] + 2, std::move(std::string{g_pMemory->m_pVGUILocalize->Find(pWeaponInfo->m_szLocalizeToken)}), pFont, 15.F, weaponColor.ModifyA(animator.Get()));
+												 text->m_iX -= text->m_iW / 2;
+												 pQueue->Push(std::move(text));
+											 }
+								 }
+							 }
 
 							 if (BOOL_GET(bRef, "esp.footsteps"); bRef)
 								 if (this->m_umFootstepsDeq.contains(pPl->Networkable()->Index()))
@@ -146,8 +182,8 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 											 //	If within boundaries
 											 if (g_iMouseX >= iX && g_iMouseY >= iY && g_iMouseX <= (iX + iW) && g_iMouseY <= (iY + iH))
 											 {
-												 std::shared_ptr<Text_t> &&text = std::make_shared<Text_t>(iX + iW / 2, iY + iH + 2, std::move(std::string(playerInfo.m_szName) + " " + std::to_string(entry.m_flFinishTime - g_pMemory->m_pGlobalVars->m_flCurTime)), pFont, 15.F, color);
-												 std::shared_ptr<Text_t> &&location = std::make_shared<Text_t>(text->m_iX, text->m_iY + text->m_iH + 2, std::move(entry.m_strLocation + " -> " + std::string{pPl->m_szLastPlaceName()}), pFont, 15.F, color);
+												 std::shared_ptr<Text_t> &&text = std::make_shared<Text_t>(iX + iW / 2, iY + iH + 2, std::move(entry.m_strName + " " + std::to_string(entry.m_flFinishTime - g_pMemory->m_pGlobalVars->m_flCurTime)), pFont, 15.F, color);
+												 std::shared_ptr<Text_t> &&location = std::make_shared<Text_t>(text->m_iX, text->m_iY + text->m_iH + 2, std::move(entry.m_strLocation + " -> " + (pPl->Networkable()->IsDormant() ? std::string{"Unknown"} : std::string{pPl->m_szLastPlaceName()})), pFont, 15.F, color);
 												 text->m_iX -= text->m_iW / 2;
 												 location->m_iX -= location->m_iW / 2;
 												 pQueue->Push(std::move(text));
@@ -159,42 +195,6 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 									 if (deqFootsteps.back().m_Animation.Get() <= 0.F)
 										 deqFootsteps.pop_back();
 								 }
-
-							 if (!pPl->Alive())
-								 return;
-
-							 Animator_t &animator = this->m_umAlpha[pPl->Networkable()->Index()];
-							 animator.Set(!pPl->Networkable()->IsDormant(), Animation_t{3.F, Easing::OutQuart}, Animation_t{3.F, Easing::OutQuart});
-
-							 if (animator.Get() > 0.F)
-							 {
-								 Vector_t<int>::V4 vecPosition;
-								 if (ComputeBoundingBox(pPl, vecPosition) && vecPosition.IsValid())
-								 {
-									 if (BOOL_GET(bRef, "esp.y_animation"); bRef)
-										 vecPosition[1] += 16 - (16 * animator.Get());
-
-									 if (BOOL_GET(bRef, "esp.box"); bRef)
-										 pQueue->Push(std::move(std::make_shared<RectangleOutline_t>(vecPosition[0], vecPosition[1], vecPosition[2], vecPosition[3], boxColor.ModifyA(animator.Get()))));
-
-									 if (BOOL_GET(bRef, "esp.name"); bRef)
-									 {
-										 std::shared_ptr<Text_t> &&text = std::make_shared<Text_t>(vecPosition[0] + vecPosition[2] / 2, vecPosition[1] - 2, std::move(std::string{playerInfo.m_szName}), pFont, 15.F, nameColor.ModifyA(animator.Get()));
-										 text->m_iX -= text->m_iW / 2;
-										 text->m_iY -= text->m_iH;
-										 pQueue->Push(std::move(text));
-									 }
-
-									 if (BOOL_GET(bRef, "esp.weapon"); bRef)
-										 if (CBaseCombatWeapon *pWeapon = pPl->GetActiveWeapon(); pWeapon)
-											 if (CCSWeaponInfo *pWeaponInfo = pWeapon->GetWeaponInfo(); pWeaponInfo)
-											 {
-												 std::shared_ptr<Text_t> &&text = std::make_shared<Text_t>(vecPosition[0] + vecPosition[2] / 2, vecPosition[1] + vecPosition[3] + 2, std::move(std::string{g_pMemory->m_pVGUILocalize->Find(pWeaponInfo->m_szLocalizeToken)}), pFont, 15.F, weaponColor.ModifyA(animator.Get()));
-												 text->m_iX -= text->m_iW / 2;
-												 pQueue->Push(std::move(text));
-											 }
-								 }
-							 }
 						 });
 }
 
@@ -209,10 +209,14 @@ void Features::Visuals_t::AddFootstep(CBasePlayer *pPl, const Vector_t<float>::V
 	INT_GET(iFootstepTime, "esp.footsteps_time");
 
 	if (BOOL_GET(bRef, "esp.footsteps"); bRef && iFootstepTime > 0)
-		if (pPl && !pPl->Networkable()->IsDormant() && vecOrigin.IsValid() && pPl->Networkable()->Index() >= 1 && pPl->Networkable()->Index() <= 64)
+		if (pPl && vecOrigin.IsValid() && pPl->Networkable()->Index() >= 1 && pPl->Networkable()->Index() <= 64)
 		{
+			PlayerInfo_t playerInfo;
+			if (!g_pMemory->m_pEngineClient->GetPlayerInfo(pPl->Networkable()->Index(), &playerInfo))
+				return;
+
 			std::unique_lock<std::mutex> lock(this->m_mutFootsteps);
 
-			this->m_umFootstepsDeq[pPl->Networkable()->Index()].emplace_front(vecOrigin, std::string{pPl->m_szLastPlaceName()}, g_pMemory->m_pGlobalVars->m_flCurTime + iFootstepTime, Animator_t{});
+			this->m_umFootstepsDeq[pPl->Networkable()->Index()].emplace_front(vecOrigin, std::string{playerInfo.m_szName}, std::string{pPl->m_szLastPlaceName()}, g_pMemory->m_pGlobalVars->m_flCurTime + iFootstepTime, Animator_t{});
 		}
 }

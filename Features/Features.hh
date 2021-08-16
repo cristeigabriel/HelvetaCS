@@ -12,6 +12,7 @@ struct Queue_t;
 struct Footstep_t
 {
 	Vector_t<float>::V3 m_vecPosition;
+	std::string m_strName;
 	std::string m_strLocation;
 	float m_flFinishTime;
 	Animator_t m_Animation;
