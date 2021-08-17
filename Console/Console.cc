@@ -18,7 +18,7 @@ constexpr static int g_iBlockSize = 18;
  * 
  */
 
-Console_t::Console_t(std::string strConfig)
+Console_t::Console_t(std::string &&strConfig)
 {
 	this->m_strConfig = std::move(strConfig);
 }
@@ -261,7 +261,7 @@ void Console_t::Draw(Drawing_t *pDraw) const
 				Text_t text = Text_t(5, this->m_iH + g_iBlockSize + 2 + (g_iBlockSize * iCount) - iAnimY, std::move(first.first), pFont, 15.F, Color_t(255, 255, 255, 255));
 				text.m_iY += 1;
 
-				const Text_t &tag = Text_t(text.m_iX + text.m_iW + 10, text.m_iY - iAnimY, std::move(second.first ? "(Callback)" : "(Identifier)"), pFont, 15.F, Color_t(220, 220, 220, 255));
+				const Text_t &tag = Text_t(text.m_iX + text.m_iW + 10, text.m_iY - iAnimY, second.first ? "(Callback)" : "(Identifier)", pFont, 15.F, Color_t(220, 220, 220, 255));
 
 				pDraw->Draw(Rectangle_t(0, this->m_iH + g_iBlockSize + 2 + (g_iBlockSize * iCount) - iAnimY, text.m_iW + tag.m_iW + 20, g_iBlockSize, color));
 
@@ -274,7 +274,7 @@ void Console_t::Draw(Drawing_t *pDraw) const
 	}
 }
 
-void Console_t::AddCallback(std::string strName, Callback_t &&method)
+void Console_t::AddCallback(std::string &&strName, Callback_t &&method)
 {
 	const Hash_t hHash = RT_HASH(strName.data());
 	//	Store string form of the callback for auto-suggest
@@ -286,7 +286,7 @@ void Console_t::AddCallback(std::string strName, Callback_t &&method)
 	this->m_umCallbacks[hHash] = std::move(method);
 }
 
-void Console_t::AddIdentifier(std::string strName, Config_t defaultValue)
+void Console_t::AddIdentifier(std::string &&strName, Config_t defaultValue)
 {
 	const Hash_t hHash = RT_HASH(strName.data());
 	//	Store string form of the identifier for auto-suggest
@@ -298,7 +298,7 @@ void Console_t::AddIdentifier(std::string strName, Config_t defaultValue)
 	this->m_umIdentifiers[hHash] = defaultValue;
 }
 
-void Console_t::WriteToBuffer(std::string strText)
+void Console_t::WriteToBuffer(std::string &&strText)
 {
 	this->m_deqConsoleBuffer.emplace_front(std::move(strText));
 	this->m_iMaxH += g_iBlockSize;
@@ -323,7 +323,7 @@ void Console_t::ProcessBuffer()
 	const Hash_t hHash = RT_HASH(strValidatedComputeString.data());
 	if (this->m_umCallbacks.contains(hHash))
 	{
-		WriteToBuffer(std::move("> " + this->m_strInputBuffer));
+		WriteToBuffer("> " + this->m_strInputBuffer);
 
 		//	Execute callback
 		bool bState = this->m_umCallbacks[hHash](this);
@@ -340,16 +340,16 @@ void Console_t::ProcessBuffer()
 		{
 			if (std::holds_alternative<bool>(identifierValue))
 			{
-				WriteToBuffer(std::move(strValidatedComputeString + ": " + (std::get<bool>(identifierValue) ? "true" : "false")));
+				WriteToBuffer(strValidatedComputeString + ": " + (std::get<bool>(identifierValue) ? "true" : "false"));
 			}
 			else if (std::holds_alternative<int>(identifierValue))
 			{
-				WriteToBuffer(std::move(strValidatedComputeString + ": " + std::to_string(std::get<int>(identifierValue))));
+				WriteToBuffer(strValidatedComputeString + ": " + std::to_string(std::get<int>(identifierValue)));
 			}
 			else if (std::holds_alternative<Color_t>(identifierValue))
 			{
 				const Color_t &colIdentifierValue = std::get<Color_t>(identifierValue);
-				WriteToBuffer(std::move(strValidatedComputeString + ": (" + std::to_string(colIdentifierValue.m_u8R) + ", " + std::to_string(colIdentifierValue.m_u8G) + ", " + std::to_string(colIdentifierValue.m_u8B) + ", " + std::to_string(colIdentifierValue.m_u8A) + ")"));
+				WriteToBuffer(strValidatedComputeString + ": (" + std::to_string(colIdentifierValue.m_u8R) + ", " + std::to_string(colIdentifierValue.m_u8G) + ", " + std::to_string(colIdentifierValue.m_u8B) + ", " + std::to_string(colIdentifierValue.m_u8A) + ")");
 			}
 		}
 		//	Identifier found, spacing found
@@ -367,13 +367,13 @@ void Console_t::ProcessBuffer()
 			{
 				identifierValue = !!min(std::atoi(strDeducedValue.c_str()), 1);
 
-				WriteToBuffer(std::move(strValidatedComputeString + " -> " + (std::get<bool>(identifierValue) ? "true" : "false")));
+				WriteToBuffer(strValidatedComputeString + " -> " + (std::get<bool>(identifierValue) ? "true" : "false"));
 			}
 			else if (std::holds_alternative<int>(identifierValue))
 			{
 				identifierValue = std::atoi(strDeducedValue.c_str());
 
-				WriteToBuffer(std::move(strValidatedComputeString + " -> " + std::to_string(std::get<int>(identifierValue))));
+				WriteToBuffer(strValidatedComputeString + " -> " + std::to_string(std::get<int>(identifierValue)));
 			}
 			//	HAX ALERT WEEWOOWEEEWOOO
 			else if (std::holds_alternative<Color_t>(identifierValue))
@@ -389,14 +389,14 @@ void Console_t::ProcessBuffer()
 				*(uint32_t *)(&std::get<Color_t>(identifierValue)) = Helveta::detail::EndiannessSwap32bit(u32Value);
 
 				const Color_t &colIdentifierValue = std::get<Color_t>(identifierValue);
-				WriteToBuffer(std::move(strValidatedComputeString + " -> (" + std::to_string(colIdentifierValue.m_u8R) + ", " + std::to_string(colIdentifierValue.m_u8G) + ", " + std::to_string(colIdentifierValue.m_u8B) + ", " + std::to_string(colIdentifierValue.m_u8A) + ")"));
+				WriteToBuffer(strValidatedComputeString + " -> (" + std::to_string(colIdentifierValue.m_u8R) + ", " + std::to_string(colIdentifierValue.m_u8G) + ", " + std::to_string(colIdentifierValue.m_u8B) + ", " + std::to_string(colIdentifierValue.m_u8A) + ")");
 			}
 		}
 	}
 	else
 	{
 	ERROR_LABEL:
-		WriteToBuffer(std::move("!Failed executing the following: \"" + this->m_strInputBuffer + "\"."));
+		WriteToBuffer("!Failed executing the following: \"" + this->m_strInputBuffer + "\".");
 	}
 
 	this->m_strInputBuffer.clear();

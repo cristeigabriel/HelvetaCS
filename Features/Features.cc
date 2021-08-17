@@ -135,7 +135,7 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 
 									 if (BOOL_GET(bRef, "esp.name"); bRef)
 									 {
-										 std::shared_ptr<Text_t> &&text = std::make_shared<Text_t>(vecPosition[0] + vecPosition[2] / 2, vecPosition[1] - 2, std::move(std::string{playerInfo.m_szName}), pFont, 15.F, nameColor.ModifyA(animator.Get()));
+										 std::shared_ptr<Text_t> &&text = std::make_shared<Text_t>(vecPosition[0] + vecPosition[2] / 2, vecPosition[1] - 2, std::string{playerInfo.m_szName}, pFont, 15.F, nameColor.ModifyA(animator.Get()));
 										 text->m_iX -= text->m_iW / 2;
 										 text->m_iY -= text->m_iH;
 										 pQueue->Push(std::move(text));
@@ -145,7 +145,7 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 										 if (CBaseCombatWeapon *pWeapon = pPl->GetActiveWeapon(); pWeapon)
 											 if (CCSWeaponInfo *pWeaponInfo = pWeapon->GetWeaponInfo(); pWeaponInfo)
 											 {
-												 std::shared_ptr<Text_t> &&text = std::make_shared<Text_t>(vecPosition[0] + vecPosition[2] / 2, vecPosition[1] + vecPosition[3] + 2, std::move(std::string{g_pMemory->m_pVGUILocalize->Find(pWeaponInfo->m_szLocalizeToken)}), pFont, 15.F, weaponColor.ModifyA(animator.Get()));
+												 std::shared_ptr<Text_t> &&text = std::make_shared<Text_t>(vecPosition[0] + vecPosition[2] / 2, vecPosition[1] + vecPosition[3] + 2, std::string{g_pMemory->m_pVGUILocalize->Find(pWeaponInfo->m_szLocalizeToken)}, pFont, 15.F, weaponColor.ModifyA(animator.Get()));
 												 text->m_iX -= text->m_iW / 2;
 												 pQueue->Push(std::move(text));
 											 }
@@ -182,8 +182,8 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 											 //	If within boundaries
 											 if (g_iMouseX >= iX && g_iMouseY >= iY && g_iMouseX <= (iX + iW) && g_iMouseY <= (iY + iH))
 											 {
-												 std::shared_ptr<Text_t> &&text = std::make_shared<Text_t>(iX + iW / 2, iY + iH + 2, std::move(entry.m_strName + " " + std::to_string(entry.m_flFinishTime - g_pMemory->m_pGlobalVars->m_flCurTime)), pFont, 15.F, color);
-												 std::shared_ptr<Text_t> &&location = std::make_shared<Text_t>(text->m_iX, text->m_iY + text->m_iH + 2, std::move(entry.m_strLocation + " -> " + (pPl->Networkable()->IsDormant() ? std::string{"Unknown"} : std::string{pPl->m_szLastPlaceName()})), pFont, 15.F, color);
+												 std::shared_ptr<Text_t> &&text = std::make_shared<Text_t>(iX + iW / 2, iY + iH + 2, entry.m_strName + " " + std::to_string(entry.m_flFinishTime - g_pMemory->m_pGlobalVars->m_flCurTime), pFont, 15.F, color);
+												 std::shared_ptr<Text_t> &&location = std::make_shared<Text_t>(text->m_iX, text->m_iY + text->m_iH + 2, entry.m_strLocation + " -> " + (pPl->Networkable()->IsDormant() ? std::string{"Unknown"} : std::string{pPl->m_szLastPlaceName()}), pFont, 15.F, color);
 												 text->m_iX -= text->m_iW / 2;
 												 location->m_iX -= location->m_iW / 2;
 												 pQueue->Push(std::move(text));

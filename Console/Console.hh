@@ -27,17 +27,17 @@ struct Console_t
 	using Config_t = std::variant<bool, int, Color_t>;
 
 	Console_t() = delete;
-	Console_t(std::string strConfig);
+	Console_t(std::string &&strConfig);
 	inline ~Console_t(){};
 
 	void Think();
 	void WndProc(UINT u32Msg, WPARAM wParam);
 	void Draw(Drawing_t *pDraw) const;
 
-	void AddCallback(std::string strName, Callback_t &&method);
-	void AddIdentifier(std::string strName, Config_t defaultValue);
+	void AddCallback(std::string &&strName, Callback_t &&method);
+	void AddIdentifier(std::string &&strName, Config_t defaultValue);
 
-	void WriteToBuffer(std::string strText);
+	void WriteToBuffer(std::string &&strText);
 	void ProcessBuffer();
 
 	bool SetAutoSuggestFocusIfPossible();
