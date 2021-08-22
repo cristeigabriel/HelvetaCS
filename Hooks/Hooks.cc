@@ -185,6 +185,8 @@ void Hooks::Bootstrap()
 		g_pConsole->AddIdentifier("esp.y_animation", false);
 		g_pConsole->AddIdentifier("esp.box", false);
 		g_pConsole->AddIdentifier("esp.box_color", Color_t(255, 255, 255, 255));
+		g_pConsole->AddIdentifier("esp.health", false);
+		g_pConsole->AddIdentifier("esp.health_color", Color_t(255, 255, 0, 255));
 		g_pConsole->AddIdentifier("esp.name", false);
 		g_pConsole->AddIdentifier("esp.name_color", Color_t(255, 255, 255, 255));
 		g_pConsole->AddIdentifier("esp.weapon", false);
@@ -229,7 +231,8 @@ void Hooks::Bootstrap()
 	HOOK(OnAddEntity, g_pMemory->m_Client.FindPattern(STB("55 8B EC 51 8B 45 0C 53 56 8B F1 57")));
 	HOOK(OnRemoveEntity, g_pMemory->m_Client.FindPattern(STB("55 8B EC 51 8B 45 0C 53 8B D9 56 57 83 F8 FF 75 07")));
 	static const Memory::Pointer_t &levelInitPrePost = g_pMemory->m_Client.FindString<"(mapname)", false>();
-	HOOK(LevelInitPreEntity, levelInitPrePost.FollowUntil(0x55, false));
+	//	@22aug opcode intersection with address
+	HOOK(LevelInitPreEntity, levelInitPrePost.FollowUntil(0xEC, false).FollowUntil(0x55, false));
 	HOOK(LevelInitPostEntity, levelInitPrePost.FollowUntil(0x55, true));
 	HOOK(CreateMove, g_pMemory->m_Client.FindPattern(STB("55 8B EC 8B 0D ? ? ? ? 85 C9 75 06")));
 	HOOK(PlayStepSound, g_pMemory->m_Client.FindString<"ct_%s", false>().FollowUntil(0x55, false));

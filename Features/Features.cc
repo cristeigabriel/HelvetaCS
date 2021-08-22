@@ -108,6 +108,7 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 	COLOR_GET(nameColor, "esp.name_color");
 	COLOR_GET(weaponColor, "esp.weapon_color");
 	COLOR_GET(footstepsColor, "esp.footsteps_color");
+	COLOR_GET(healthColor, "esp.health_color");
 	INT_GET(iFootstepTime, "esp.footsteps_time");
 
 	g_pEntityCache->Loop([&](CCSPlayer *pPl)
@@ -149,6 +150,18 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 												 text->m_iX -= text->m_iW / 2;
 												 pQueue->Push(std::move(text));
 											 }
+
+									 if (BOOL_GET(bRef, "esp.health"); bRef)
+									 {
+										 constexpr int iMaxHealth = 100;
+										 int iHealth = min(iMaxHealth, pPl->m_iHealth());
+
+										 constexpr int iWidth = 5;
+										 int iHeight = iHealth * vecPosition[3] / iMaxHealth;
+
+										 pQueue->Push(std::move(std::make_shared<Rectangle_t>(vecPosition[0] - iWidth - 2, vecPosition[1], iWidth, vecPosition[3], Color_t(0, 0, 0, 120).ModifyA(animator.Get()))));
+										 pQueue->Push(std::move(std::make_shared<Rectangle_t>(vecPosition[0] - iWidth - 2, vecPosition[1] + vecPosition[3] - iHeight, iWidth, iHeight, healthColor.ModifyA(animator.Get()))));
+									 }
 								 }
 							 }
 
