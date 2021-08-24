@@ -6,25 +6,25 @@
 
 struct PlayerInfo_t
 {
-	uint64_t m_u64Version;
+	uint64_t m_nVersion;
 	union
 	{
-		uint64_t m_u64SteamID;
+		uint64_t m_nSteamID;
 		struct
 		{
-			uint32_t m_u32XuidLow;
-			uint32_t m_u32XuidHigh;
+			uint32_t m_nXuidLow;
+			uint32_t m_nXuidHigh;
 		};
 	};
 	char m_szName[128];
-	int m_iUserId;
+	int m_nUserId;
 	char m_szGUid[33];
-	uint32_t m_u32FriendsId;
+	uint32_t m_nFriendsId;
 	char m_szFriendsName[128];
 	bool m_bFakePlayer;
 	bool m_bIsHltv;
 	int m_iCustomFiles[4];
-	uint8_t m_u8FilesDownloaded;
+	uint8_t m_nFilesDownloaded;
 };
 
 class SDK::IVEngineClient

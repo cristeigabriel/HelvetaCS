@@ -4,7 +4,7 @@
 
 class SDK::ConVar
 {
-	public:
+public:
 	const char *GetString();
 	float GetFloat();
 	int GetInt();
@@ -18,5 +18,5 @@ class SDK::ConVar
 	bool m_bRegistered;
 	const char *m_szName;
 	const char *m_szDetails;
-	int m_nFlags;
+	int m_fFlags;
 };

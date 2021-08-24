@@ -9,7 +9,7 @@ public:
 	union
 	{
 		float m_flVariant;
-		long m_longVariant;
+		long m_lVariant;
 		char *m_szVariant;
 		Vector_t<float>::V3 m_vecVariant;
 	};

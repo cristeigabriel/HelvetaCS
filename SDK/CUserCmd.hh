@@ -8,7 +8,7 @@ class SDK::CUserCmd
 	PAD(4);
 
 public:
-	int m_iCommandNumber;
+	int m_nCommandNumber;
 	int m_iTickCount;
 
 	Vector_t<float>::V3 m_vecViewAngles;

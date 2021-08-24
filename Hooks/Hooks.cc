@@ -12,6 +12,7 @@
 
 #include "../SDK/CUserCmd.hh"
 #include "../SDK/IClientEntityList.hh"
+#include "../SDK/IVEngineClient.hh"
 #include "../SDK/ConVar.hh"
 
 #include "../Entities/CCSPlayer.hh"
@@ -103,7 +104,7 @@ void __cdecl LevelInitPostEntity::Hooked()
 
 bool __stdcall CreateMove::Hooked(float flSampleTime, SDK::CUserCmd *pCmd)
 {
-	if (!flSampleTime || !pCmd || (pCmd && !pCmd->m_iCommandNumber) || !g_pMemory->LocalPlayer() || (g_pMemory->LocalPlayer() && !g_pMemory->LocalPlayer()->Alive()))
+	if (!g_pMemory->m_pEngineClient->InGame() || !flSampleTime || !pCmd || (pCmd && !pCmd->m_nCommandNumber) || !g_pMemory->LocalPlayer() || (g_pMemory->LocalPlayer() && !g_pMemory->LocalPlayer()->Alive()))
 	{
 		return Original(flSampleTime, pCmd);
 	}
@@ -171,9 +172,9 @@ void Hooks::Bootstrap()
 									for (SDK::ConVar *pCVar = pFirstCVar; pCVar; pCVar = pCVar->m_pNext)
 									{
 										//	(1 << 1) = 2 = FCVAR_DEVELOPMENTONLY
-										if (pCVar->m_nFlags & 2)
+										if (pCVar->m_fFlags & 2)
 										{
-											pCVar->m_nFlags &= ~2;
+											pCVar->m_fFlags &= ~2;
 											++iCount;
 										}
 									}

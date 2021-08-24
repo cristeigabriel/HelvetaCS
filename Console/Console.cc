@@ -328,9 +328,7 @@ void Console_t::ProcessBuffer()
 		//	Execute callback
 		bool bState = this->m_umCallbacks[hHash](this);
 		if (!bState)
-		{
 			goto ERROR_LABEL;
-		}
 	}
 	else if (this->m_umIdentifiers.contains(hHash))
 	{
@@ -339,13 +337,9 @@ void Console_t::ProcessBuffer()
 		if (iFirstOfSpace == std::string::npos)
 		{
 			if (std::holds_alternative<bool>(identifierValue))
-			{
 				WriteToBuffer(strValidatedComputeString + ": " + (std::get<bool>(identifierValue) ? "true" : "false"));
-			}
 			else if (std::holds_alternative<int>(identifierValue))
-			{
 				WriteToBuffer(strValidatedComputeString + ": " + std::to_string(std::get<int>(identifierValue)));
-			}
 			else if (std::holds_alternative<Color_t>(identifierValue))
 			{
 				const Color_t &colIdentifierValue = std::get<Color_t>(identifierValue);
@@ -480,9 +474,7 @@ bool Console_t::LoadConfig()
 		{
 			const nlohmann::json &entry = jsonConfig[first.first];
 			if (entry.empty())
-			{
 				continue;
-			}
 
 			switch (entry["identifier"].get<int>())
 			{

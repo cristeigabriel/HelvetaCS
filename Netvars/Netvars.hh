@@ -8,7 +8,7 @@
 
 struct Netvars_t
 {
-	Netvars_t() = default;
+	Netvars_t() = delete;
 	Netvars_t(SDK::ClientClass *pClassHead);
 	inline ~Netvars_t(){};
 
