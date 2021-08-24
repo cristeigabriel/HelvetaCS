@@ -5,6 +5,9 @@
 #include <fstream>
 #include <filesystem>
 
+//	pFont CalcTextSizeA
+#include "../Vendor/ImGui/imgui.h"
+
 /**
  * @brief Styling is not an issue yet, thus, I'll make stylization details global (at least, for now).
  * 
@@ -94,9 +97,21 @@ void Console_t::WndProc(UINT u32Msg, WPARAM wParam)
 		}
 		break;
 
+		case VK_LEFT:
+		{
+			if (this->m_strInputBuffer.empty() || !this->m_bInputFocus)
+				return;
+
+			this->m_iTextScrollX = max(0, this->m_iTextScrollX - 1);
+		}
+		break;
+
 		case VK_RIGHT:
 		{
-			SetAutoSuggestFocusIfPossible();
+			if (this->m_strInputBuffer.empty() || !this->m_bInputFocus)
+				return;
+
+			this->m_iTextScrollX = max(0, min(this->m_iTextScrollX + 1, this->m_strInputBuffer.size()));
 		}
 		break;
 		default:
@@ -126,8 +141,11 @@ void Console_t::WndProc(UINT u32Msg, WPARAM wParam)
 				//	Upon the loss of a  character, we want to reset the auto suggestion scroll count
 				this->m_nAutoSuggestedSelection = 0;
 
-				if (!this->m_strInputBuffer.empty())
-					this->m_strInputBuffer.pop_back();
+				if (!this->m_strInputBuffer.empty() && this->m_iTextScrollX > 0)
+				{
+					this->m_strInputBuffer.erase(this->m_strInputBuffer.begin() + (this->m_iTextScrollX - 1), this->m_strInputBuffer.begin() + this->m_iTextScrollX);
+					this->m_iTextScrollX = max(0, this->m_iTextScrollX - 1);
+				}
 			}
 		}
 		break;
@@ -164,7 +182,10 @@ void Console_t::WndProc(UINT u32Msg, WPARAM wParam)
 
 				char chInput = (char)wParam;
 				if (chInput > 0 && chInput < 0xFF)
-					this->m_strInputBuffer.push_back(chInput);
+				{
+					this->m_strInputBuffer.insert(this->m_strInputBuffer.begin() + this->m_iTextScrollX, chInput);
+					this->m_iTextScrollX += 1;
+				}
 			}
 		}
 		break;
@@ -241,8 +262,19 @@ void Console_t::Draw(Drawing_t *pDraw) const
 		if (this->m_bInputFocus)
 		{
 			int iLevel = (g_iBlockSize - 6) / 2;
-			pDraw->Draw(RectangleGradient_t(6 + iOldW, this->m_iH + 4 - iAnimY, 1, iLevel, Color_t(255, 255, 255, 30), textColor, false));
-			pDraw->Draw(RectangleGradient_t(6 + iOldW, this->m_iH + 4 + iLevel - iAnimY, 1, iLevel, textColor, Color_t(255, 255, 255, 30), false));
+			bool bState = this->m_strInputBuffer.size() == this->m_iTextScrollX;
+			if (bState)
+			{
+				pDraw->Draw(RectangleGradient_t(6 + iOldW, this->m_iH + 4 - iAnimY, 1, iLevel, Color_t(255, 255, 255, 30), textColor, false));
+				pDraw->Draw(RectangleGradient_t(6 + iOldW, this->m_iH + 4 + iLevel - iAnimY, 1, iLevel, textColor, Color_t(255, 255, 255, 30), false));
+			}
+			else
+			{
+				int iSubstrSize = (int)pFont->CalcTextSizeA(15.F, FLT_MAX, 0.F, this->m_strInputBuffer.substr(0, this->m_iTextScrollX).data(), nullptr)[0];
+
+				pDraw->Draw(RectangleGradient_t(6 + iSubstrSize, this->m_iH + 4 - iAnimY, 1, iLevel, Color_t(255, 255, 255, 30), textColor, false));
+				pDraw->Draw(RectangleGradient_t(6 + iSubstrSize, this->m_iH + 4 + iLevel - iAnimY, 1, iLevel, textColor, Color_t(255, 255, 255, 30), false));
+			}
 		}
 
 		//	Input Buffer
@@ -394,6 +426,7 @@ void Console_t::ProcessBuffer()
 	}
 
 	this->m_strInputBuffer.clear();
+	this->m_iTextScrollX = 0;
 }
 
 bool Console_t::SetAutoSuggestFocusIfPossible()
@@ -420,6 +453,7 @@ bool Console_t::SetAutoSuggestFocusIfPossible()
 
 		//	Focus on our current value
 		this->m_strInputBuffer.push_back(' ');
+		this->m_iTextScrollX = this->m_strInputBuffer.size();
 
 		return true;
 	}

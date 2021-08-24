@@ -71,6 +71,8 @@ private:
 	//	Hack, but it's ok...
 	mutable int m_iH = 0;
 
+	int m_iTextScrollX = 0;
+
 	int m_iMaxH = 0;
 
 	int m_iScrollage = 0;
