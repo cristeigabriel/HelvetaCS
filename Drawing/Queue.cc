@@ -1,5 +1,6 @@
 #include "Queue.hh"
-#include <cassert>
+#undef NDEBUG
+#include <assert.h>
 
 Queue_t::Queue_t(std::shared_mutex *mutPtr)
 {

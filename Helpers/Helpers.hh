@@ -4,7 +4,8 @@
 #include <iostream>
 #include <cstdint>
 #include <cinttypes>
-#include <cassert>
+#undef NDEBUG
+#include <assert.h>
 #include <cmath>
 #include <corecrt.h>
 #include <corecrt_math_defines.h>
@@ -843,8 +844,4 @@ using Helveta::Vector_t;
  * @brief Debug Logging
  * 
  */
-#ifdef _DEBUG
 #define LOG(...) std::cout << __VA_ARGS__ << '\n'
-#else
-#define LOG(...)
-#endif

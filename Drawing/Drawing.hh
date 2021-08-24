@@ -10,6 +10,8 @@
 #include <shared_mutex>
 #include <d3d9.h>
 
+struct ImGuiIO;
+struct ImGuiContext;
 struct ImDrawList;
 struct ImFont;
 struct Drawing_t
@@ -40,6 +42,8 @@ struct Drawing_t
 
 private:
 	IDirect3DDevice9 *m_pDevice = nullptr;
+	ImGuiContext *m_pImGuiContext = nullptr;
+	ImGuiIO *m_pImGuiIO = nullptr;
 	ImDrawList *m_pDrawList = nullptr;
 
 	std::shared_mutex m_mutLock = {};

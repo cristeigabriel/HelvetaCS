@@ -1,6 +1,7 @@
 #include "Netvars.hh"
 #include "../SDK/ClientClass.hh"
-#include <cassert>
+#undef NDEBUG
+#include <assert.h>
 
 Netvars_t::Netvars_t(SDK::ClientClass *pClassHead)
 {

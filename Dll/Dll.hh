@@ -5,7 +5,8 @@
 #include <cstdint>
 #include <array>
 #include <unordered_map>
-#include <cassert>
+#undef NDEBUG
+#include <assert.h>
 
 namespace Memory
 {

@@ -1,21 +1,18 @@
 #include "Drawing.hh"
 #include "../Vendor/ImGui/imgui.h"
 #include "../Vendor/ImGui/imgui_impl_dx9.h"
-#include <cassert>
-
-static inline ImGuiIO *GetIO()
-{
-	static ImGuiIO *io = &ImGui::GetIO();
-	assert(io);
-	return io;
-}
+#undef NDEBUG
+#include <assert.h>
 
 Drawing_t::Drawing_t(IDirect3DDevice9 *pDevice, int iScreenW, int iScreenH)
 {
 	this->m_pDevice = pDevice;
 	assert(this->m_pDevice);
 
-	assert(ImGui::CreateContext());
+	this->m_pImGuiContext = ImGui::CreateContext();
+	assert(this->m_pImGuiContext);
+	this->m_pImGuiIO = &ImGui::GetIO();
+	assert(this->m_pImGuiIO);
 	assert(ImGui_ImplDX9_Init(this->m_pDevice));
 
 	UpdateIO(iScreenW, iScreenH);
@@ -26,8 +23,8 @@ void Drawing_t::UpdateIO(int iScreenW, int iScreenH)
 	this->m_iScreenW = iScreenW;
 	this->m_iScreenH = iScreenH;
 
-	GetIO()->DisplaySize.x = (float)this->m_iScreenW;
-	GetIO()->DisplaySize.y = (float)this->m_iScreenH;
+	this->m_pImGuiIO->DisplaySize.x = (float)this->m_iScreenW;
+	this->m_pImGuiIO->DisplaySize.y = (float)this->m_iScreenH;
 }
 
 /**
@@ -136,7 +133,7 @@ void Drawing_t::RemoveQueue(Hash_t hKey)
 
 void Drawing_t::AddFont(Hash_t hKey, const void *pContents, uint32_t u32Size, float flSize)
 {
-	this->m_umFonts[hKey] = GetIO()->Fonts->AddFontFromMemoryCompressedTTF(pContents, u32Size, flSize);
+	this->m_umFonts[hKey] = this->m_pImGuiIO->Fonts->AddFontFromMemoryCompressedTTF(pContents, u32Size, flSize);
 }
 
 const ImFont *Drawing_t::GetFont(Hash_t hKey) const

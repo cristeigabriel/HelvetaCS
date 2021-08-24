@@ -5,7 +5,8 @@
 #include "Entities/Forward.hh"
 #include <memory>
 #include <d3d9.h>
-#include <cassert>
+#undef NDEBUG
+#include <assert.h>
 
 struct CVars_t
 {
