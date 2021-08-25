@@ -16,6 +16,34 @@
 #define ADDRSET(x, type, ...) ADDRSET_PAD(x, type, 0, __VA_ARGS__)
 //	========================================================================================================================================
 
+//	https://cdn.discordapp.com/attachments/741640932004331561/880033642783571988/unknown.png
+//	type info on windows for dummies
+const char * ::GetVftTableRawName(void *pVftPtr)
+{
+	//	maybe i should have a valid pointer check(s!) there, its just a map query . . . who cares if you make this fail (on purpose) you're simply an asshole (cope)
+	void *pFirstVftMethod = *(void **)pVftPtr;
+	if (!pFirstVftMethod)
+		return nullptr;
+
+	void *pRttiCompleteObjectLocator = (void *)((uintptr_t)pFirstVftMethod - 4);
+	if (!pRttiCompleteObjectLocator)
+		return nullptr;
+
+	void *pRttiClassHierarchyDescriptor = *(void **)(pRttiCompleteObjectLocator);
+	if (!pRttiClassHierarchyDescriptor)
+		return nullptr;
+
+	void *pRttiTypeDescriptor = (void *)((uintptr_t)pRttiClassHierarchyDescriptor + 12);
+	if (!pRttiTypeDescriptor)
+		return nullptr;
+
+	const char *szRawClassName = (const char *)((uintptr_t)(*(void **)pRttiTypeDescriptor) + 8);
+	if (!szRawClassName || szRawClassName[0] != '.')
+		return nullptr;
+
+	return szRawClassName;
+}
+
 template <Helveta::CompileTimeString_t Str, bool ServerBounded = false>
 static SDK::ConVar *FindConVar(const Memory::Dll_t &module)
 {

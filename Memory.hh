@@ -8,6 +8,8 @@
 #undef NDEBUG
 #include <assert.h>
 
+extern inline const char *GetVftTableRawName(void *pVftPtr);
+
 struct CVars_t
 {
 	SDK::ConVar *cl_updaterate;

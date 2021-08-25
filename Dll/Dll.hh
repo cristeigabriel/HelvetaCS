@@ -81,7 +81,7 @@ namespace Memory
 		const Pointer_t FindPattern(const std::array<int, N> &rgPattern, size_t nMatch = 0u, Hash_t hSection = HASH(".text")) const;
 
 		template <Helveta::CompileTimeString_t Str, bool Conditioned>
-		const Pointer_t FindString(uint8_t u8Opcode = 0xFF, int nPad = 4u);
+		const Pointer_t FindString(uint8_t u8Opcode = 0xFF, int nPad = 4u, Hash_t hSection = HASH(".rdata"));
 
 	private:
 		const char *m_szName = nullptr;
@@ -130,9 +130,9 @@ const Memory::Pointer_t Memory::Dll_t::FindPattern(const std::array<int, N> &rgP
 }
 
 template <Helveta::CompileTimeString_t Str, bool Conditioned>
-const Memory::Pointer_t Memory::Dll_t::FindString(uint8_t u8Opcode, int nPad)
+const Memory::Pointer_t Memory::Dll_t::FindString(uint8_t u8Opcode, int nPad, Hash_t hSection)
 {
-	uintptr_t uptrString = FindPattern(CAST_ARRAY(int, FOLD_LITERALS_INTO_ARRAY(Str.m_szData)), 0, HASH(".rdata")).Get();
+	uintptr_t uptrString = FindPattern(CAST_ARRAY(int, FOLD_LITERALS_INTO_ARRAY(Str.m_szData)), 0, hSection).Get();
 	const std::array<int, 4> &rgReversedString = RT_CAST_ARRAY(int, Helveta::detail::ToArray32bit(Helveta::detail::EndiannessSwap32bit(uptrString)));
 
 	Pointer_t xref = FindPattern(rgReversedString);

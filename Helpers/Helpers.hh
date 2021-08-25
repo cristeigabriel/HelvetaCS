@@ -462,12 +462,72 @@ namespace Helveta
 				return m_nPackLen;
 			}
 
-			constexpr T &operator[](size_t i) const
+			constexpr Make<Args...> operator+(const Make &arg) const
+			{
+				Make vecResult{};
+				for (size_t i = 0; i < m_nPackLen; ++i)
+					vecResult[i] = this->m_rgContents[i] + arg[i];
+
+				return vecResult;
+			}
+
+			constexpr Make<Args...> operator-(const Make &arg) const
+			{
+				Make vecResult{};
+				for (size_t i = 0; i < m_nPackLen; ++i)
+					vecResult[i] = this->m_rgContents[i] - arg[i];
+
+				return vecResult;
+			}
+
+			constexpr Make<Args...> operator*(const Make &arg) const
+			{
+				Make vecResult{};
+				for (size_t i = 0; i < m_nPackLen; ++i)
+					vecResult[i] = this->m_rgContents[i] * arg[i];
+
+				return vecResult;
+			}
+
+			constexpr Make<Args...> operator/(const Make &arg) const
+			{
+				Make vecResult{};
+				for (size_t i = 0; i < m_nPackLen; ++i)
+					vecResult[i] = this->m_rgContents[i] / arg[i];
+
+				return vecResult;
+			}
+
+			inline void operator+=(const Make &arg)
+			{
+				for (size_t i = 0; i < m_nPackLen; ++i)
+					this->m_rgContents[i] += arg[i];
+			}
+
+			inline void operator-=(const Make &arg)
+			{
+				for (size_t i = 0; i < m_nPackLen; ++i)
+					this->m_rgContents[i] -= arg[i];
+			}
+
+			inline void operator*=(const Make &arg)
+			{
+				for (size_t i = 0; i < m_nPackLen; ++i)
+					this->m_rgContents[i] *= arg[i];
+			}
+
+			inline void operator/=(const Make &arg)
+			{
+				for (size_t i = 0; i < m_nPackLen; ++i)
+					this->m_rgContents[i] /= arg[i];
+			}
+
+			constexpr const T &operator[](size_t i) const
 			{
 				return this->m_rgContents[i];
 			}
 
-			T &operator[](size_t i)
+			constexpr T &operator[](size_t i)
 			{
 				return this->m_rgContents[i];
 			}
@@ -533,12 +593,12 @@ namespace Helveta
 				static_assert(N <= m_nPackLen);
 				assert(arg.Size() <= N);
 
-				const Make &arg_contents = arg.Copy();
+				const Make &argContents = arg.Copy();
 				const Make &contents = Copy();
 				T result = {};
 
 				for (size_t i = 0; i < N; ++i)
-					result += contents[i] * arg_contents[i];
+					result += contents[i] * argContents[i];
 
 				return result;
 			}
