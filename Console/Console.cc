@@ -14,6 +14,21 @@
  */
 //	========================================================================================================================================
 constexpr static int g_iBlockSize = 18;
+constexpr static float g_flFontSize = 15.F;
+
+static_assert(g_flFontSize <= g_iBlockSize);
+
+constexpr static Color_t g_textColorFocused = Color_t(255, 255, 255, 255);
+constexpr static Color_t g_textColorUnfocused = Color_t(190, 190, 190, 255);
+constexpr static Color_t g_textColorTag = Color_t(220, 220, 220, 255);
+constexpr static Color_t g_errorColor = Color_t(255, 0, 0, 255);
+constexpr static Color_t g_inputColorFocused = Color_t(32, 32, 32, 142);
+constexpr static Color_t g_inputColorUnfocused = Color_t(18, 18, 18, 142);
+constexpr static Color_t g_backgroundColor = Color_t(36, 37, 42, 102);
+constexpr static Color_t g_cursorColor = Color_t(255, 255, 255, 30);
+constexpr static Color_t g_autoSuggestColorEven = Color_t(36, 36, 36, 142);
+constexpr static Color_t g_autoSuggestColorOdd = Color_t(44, 44, 44, 142);
+constexpr static Color_t g_autoSuggestColorSelected = Color_t(68, 68, 68, 142);
 //	========================================================================================================================================
 
 /**
@@ -225,13 +240,13 @@ void Console_t::Draw(Drawing_t *pDraw) const
 			pDraw->PushClip(0, -iAnimY, iW, this->m_iH);
 
 			//	Draw Background
-			pDraw->Draw(Rectangle_t(0, -iAnimY, iW, this->m_iH, Color_t(36, 37, 42, 102)));
+			pDraw->Draw(Rectangle_t(0, -iAnimY, iW, this->m_iH, g_backgroundColor));
 
 			for (size_t i = 0; i < this->m_deqConsoleBuffer.size(); ++i)
 			{
-				const Color_t &color = (this->m_deqConsoleBuffer[i][0] == '!') ? Color_t(255, 0, 0, 255) : (this->m_bInputFocus ? Color_t(190, 190, 190, 255) : Color_t(255, 255, 255, 255));
+				const Color_t &color = (this->m_deqConsoleBuffer[i][0] == '!') ? g_errorColor : (this->m_bInputFocus ? g_textColorUnfocused : g_textColorFocused);
 
-				const Text_t &text = Text_t(5, this->m_iH - (g_iBlockSize * (i + 1)) + this->m_iScrollage - iAnimY, std::move(this->m_deqConsoleBuffer[i]), pFont, 15.F, color);
+				const Text_t &text = Text_t(5, this->m_iH - (g_iBlockSize * (i + 1)) + this->m_iScrollage - iAnimY, std::move(this->m_deqConsoleBuffer[i]), pFont, g_flFontSize, color);
 
 				//	Rendering optimization
 				if (text.m_iY < (-g_iBlockSize))
@@ -247,11 +262,11 @@ void Console_t::Draw(Drawing_t *pDraw) const
 		}
 
 		//	Input Zone
-		const Color_t &color = this->m_bInputFocus ? Color_t(32, 32, 32, 142) : Color_t(18, 18, 18, 142);
-		const Color_t &textColor = this->m_bInputFocus ? Color_t(255, 255, 255, 255) : Color_t(190, 190, 190, 255);
+		const Color_t &color = this->m_bInputFocus ? g_inputColorFocused : g_inputColorUnfocused;
+		const Color_t &textColor = this->m_bInputFocus ? g_textColorFocused : g_textColorUnfocused;
 		pDraw->Draw(Rectangle_t(0, this->m_iH - iAnimY, iW, g_iBlockSize + 2, color));
 
-		Text_t text = Text_t(5, this->m_iH + (g_iBlockSize / 2) - iAnimY, std::move(this->m_strInputBuffer), pFont, 15.F, textColor);
+		Text_t text = Text_t(5, this->m_iH + (g_iBlockSize / 2) - iAnimY, std::move(this->m_strInputBuffer), pFont, g_flFontSize, textColor);
 		text.m_iY -= text.m_iH / 2;
 
 		int iOldW = text.m_iW;
@@ -265,15 +280,15 @@ void Console_t::Draw(Drawing_t *pDraw) const
 			bool bState = this->m_strInputBuffer.size() == this->m_iTextScrollX;
 			if (bState)
 			{
-				pDraw->Draw(RectangleGradient_t(6 + iOldW, this->m_iH + 4 - iAnimY, 1, iLevel, Color_t(255, 255, 255, 30), textColor, false));
-				pDraw->Draw(RectangleGradient_t(6 + iOldW, this->m_iH + 4 + iLevel - iAnimY, 1, iLevel, textColor, Color_t(255, 255, 255, 30), false));
+				pDraw->Draw(RectangleGradient_t(6 + iOldW, this->m_iH + 4 - iAnimY, 1, iLevel, g_cursorColor, textColor, false));
+				pDraw->Draw(RectangleGradient_t(6 + iOldW, this->m_iH + 4 + iLevel - iAnimY, 1, iLevel, textColor, g_cursorColor, false));
 			}
 			else
 			{
-				int iSubstrSize = (int)pFont->CalcTextSizeA(15.F, FLT_MAX, 0.F, this->m_strInputBuffer.substr(0, this->m_iTextScrollX).data(), nullptr)[0];
+				int iSubstrSize = (int)pFont->CalcTextSizeA(g_flFontSize, FLT_MAX, 0.F, this->m_strInputBuffer.substr(0, this->m_iTextScrollX).data(), nullptr)[0];
 
-				pDraw->Draw(RectangleGradient_t(6 + iSubstrSize, this->m_iH + 4 - iAnimY, 1, iLevel, Color_t(255, 255, 255, 30), textColor, false));
-				pDraw->Draw(RectangleGradient_t(6 + iSubstrSize, this->m_iH + 4 + iLevel - iAnimY, 1, iLevel, textColor, Color_t(255, 255, 255, 30), false));
+				pDraw->Draw(RectangleGradient_t(6 + iSubstrSize, this->m_iH + 4 - iAnimY, 1, iLevel, g_cursorColor, textColor, false));
+				pDraw->Draw(RectangleGradient_t(6 + iSubstrSize, this->m_iH + 4 + iLevel - iAnimY, 1, iLevel, textColor, g_cursorColor, false));
 			}
 		}
 
@@ -286,14 +301,12 @@ void Console_t::Draw(Drawing_t *pDraw) const
 				if (!first.second)
 					continue;
 
-				int iPad = ((iCount % 2 == 0) ? 0 : 8) + ((this->m_nAutoSuggestedSelection == iCount) ? 32 : 0);
+				const Color_t &color = (this->m_nAutoSuggestedSelection == iCount) ? g_autoSuggestColorSelected : ((iCount % 2 == 0) ? g_autoSuggestColorEven : g_autoSuggestColorOdd);
 
-				const Color_t &color = Color_t(36 + iPad, 36 + iPad, 36 + iPad, 142);
-
-				Text_t text = Text_t(5, this->m_iH + g_iBlockSize + 2 + (g_iBlockSize * iCount) - iAnimY, std::move(first.first), pFont, 15.F, Color_t(255, 255, 255, 255));
+				Text_t text = Text_t(5, this->m_iH + g_iBlockSize + 2 + (g_iBlockSize * iCount) - iAnimY, std::move(first.first), pFont, g_flFontSize, (this->m_nAutoSuggestedSelection == iCount) ? g_textColorFocused : g_textColorUnfocused);
 				text.m_iY += 1;
 
-				const Text_t &tag = Text_t(text.m_iX + text.m_iW + 10, text.m_iY - iAnimY, second.first ? "(Callback)" : "(Identifier)", pFont, 15.F, Color_t(220, 220, 220, 255));
+				const Text_t &tag = Text_t(text.m_iX + text.m_iW + 10, text.m_iY - iAnimY, second.first ? "(Callback)" : "(Identifier)", pFont, g_flFontSize, g_textColorTag);
 
 				pDraw->Draw(Rectangle_t(0, this->m_iH + g_iBlockSize + 2 + (g_iBlockSize * iCount) - iAnimY, text.m_iW + tag.m_iW + 20, g_iBlockSize, color));
 
