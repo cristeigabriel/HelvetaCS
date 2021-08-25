@@ -183,6 +183,8 @@ void Hooks::Bootstrap()
 									return true;
 								});
 
+		g_pConsole->AddIdentifier("esp.filters.enemies", false);
+		g_pConsole->AddIdentifier("esp.filters.teammates", false);
 		g_pConsole->AddIdentifier("esp.y_animation", false);
 		g_pConsole->AddIdentifier("esp.box", false);
 		g_pConsole->AddIdentifier("esp.box_color", Color_t(255, 255, 255, 255));

@@ -116,6 +116,14 @@ void Features::Visuals_t::Run(Queue_t *pQueue)
 							 if (!pPl->Alive())
 								 return;
 
+							 if (BOOL_GET(bRef, "esp.filters.enemies"); !bRef)
+								 if (pPl->m_iTeamNum() != g_pMemory->LocalPlayer()->m_iTeamNum())
+									 return;
+
+							 if (BOOL_GET(bRef, "esp.filters.teammates"); !bRef)
+								 if (pPl->m_iTeamNum() == g_pMemory->LocalPlayer()->m_iTeamNum())
+									 return;
+
 							 Animator_t &animator = this->m_umAlpha[pPl->Networkable()->Index()];
 							 animator.Set(!pPl->Networkable()->IsDormant(), Animation_t{3.F, Easing::OutQuart}, Animation_t{3.F, Easing::OutQuart});
 
