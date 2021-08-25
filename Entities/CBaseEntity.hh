@@ -33,4 +33,6 @@ NETWORKED_CLASS(CBaseEntity,
 				IClientNetworkable * Networkable();
 				OFFSET(uint8_t, m_nMoveType, g_pNetvars->Get(hHash, HASH("m_nRenderMode")) + 1);
 
-				bool ComputeHitboxSurroundingBox(Vector_t<float>::V3 *pVecMins, Vector_t<float>::V3 *pVecMaxs););
+				bool ComputeHitboxSurroundingBox(Vector_t<float>::V3 *pVecMins, Vector_t<float>::V3 *pVecMaxs);
+				Vector_t<float>::V3 & GetAbsOrigin();
+				void SetAbsOrigin(const Vector_t<float>::V3 &vecOrigin););
