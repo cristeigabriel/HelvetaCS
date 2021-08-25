@@ -126,6 +126,28 @@ void __fastcall PlayStepSound::Hooked(CCSPlayer *pThisPtr, void *pEdx, Vector_t<
 	Original(pThisPtr, pEdx, vecOrigin, pSurface, flVolume, bForce, pArg);
 }
 
+bool __cdecl GlowEffectSpectator::Hooked(CCSPlayer *pPl, CCSPlayer *pLocal, int iStyle, Vector_t<float>::V3 &vecColor, float &flAlphaStart, float &flAlpha, float &flTimeStart, float &flTimeTarget, bool &bAnim)
+{
+	if (BOOL_GET(bRef, "esp.glow"); !bRef)
+		return Original(pPl, pLocal, iStyle, vecColor, flAlphaStart, flAlpha, flTimeStart, flTimeTarget, bAnim);
+
+	if (BOOL_GET(bRef, "esp.filters.enemies"); !bRef)
+		if (pPl->m_iTeamNum() != g_pMemory->LocalPlayer()->m_iTeamNum())
+			return false;
+
+	if (BOOL_GET(bRef, "esp.filters.teammates"); !bRef)
+		if (pPl->m_iTeamNum() == g_pMemory->LocalPlayer()->m_iTeamNum())
+			return false;
+
+	COLOR_GET(glowColor, "esp.glow_color");
+	vecColor[0] = glowColor.m_u8R / 255.F;
+	vecColor[1] = glowColor.m_u8G / 255.F;
+	vecColor[2] = glowColor.m_u8B / 255.F;
+	flAlpha = glowColor.m_u8A / 255.F;
+
+	return pPl != pLocal;
+}
+
 /**
  * @brief Utility Macros
  * 
@@ -197,6 +219,8 @@ void Hooks::Bootstrap()
 		g_pConsole->AddIdentifier("esp.footsteps", false);
 		g_pConsole->AddIdentifier("esp.footsteps_time", 3);
 		g_pConsole->AddIdentifier("esp.footsteps_color", Color_t(255, 255, 255, 255));
+		g_pConsole->AddIdentifier("esp.glow", false);
+		g_pConsole->AddIdentifier("esp.glow_color", Color_t(0, 255, 0, 255));
 
 		g_pConsole->AddCallback("config.save", [](Console_t *pConsole)
 								{
@@ -239,4 +263,5 @@ void Hooks::Bootstrap()
 	HOOK(LevelInitPostEntity, levelInitPrePost.FollowUntil(0x55, true));
 	HOOK(CreateMove, g_pMemory->m_Client.FindPattern(STB("55 8B EC 8B 0D ? ? ? ? 85 C9 75 06")));
 	HOOK(PlayStepSound, g_pMemory->m_Client.FindString<"ct_%s", false>().FollowUntil(0x55, false));
+	HOOK(GlowEffectSpectator, g_pMemory->m_Client.FindPattern(STB("55 8B EC 83 EC 14 53 8B 5D 0C 56 57 85 DB 74 47 ")));
 }
