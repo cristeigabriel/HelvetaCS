@@ -246,7 +246,8 @@ void Console_t::Draw(Drawing_t *pDraw) const
 			{
 				const Color_t &color = (this->m_deqConsoleBuffer[i][0] == '!') ? g_errorColor : (this->m_bInputFocus ? g_textColorUnfocused : g_textColorFocused);
 
-				const Text_t &text = Text_t(5, this->m_iH - (g_iBlockSize * (i + 1)) + this->m_iScrollage - iAnimY, std::move(this->m_deqConsoleBuffer[i]), pFont, g_flFontSize, color);
+				Text_t text = Text_t(5, this->m_iH - (g_iBlockSize * (i + 1)) + this->m_iScrollage - iAnimY + g_iBlockSize / 2, std::move(this->m_deqConsoleBuffer[i]), pFont, g_flFontSize, color);
+				text.m_iY -= text.m_iH / 2;
 
 				//	Rendering optimization
 				if (text.m_iY < (-g_iBlockSize))
@@ -303,10 +304,10 @@ void Console_t::Draw(Drawing_t *pDraw) const
 
 				const Color_t &color = (this->m_nAutoSuggestedSelection == iCount) ? g_autoSuggestColorSelected : ((iCount % 2 == 0) ? g_autoSuggestColorEven : g_autoSuggestColorOdd);
 
-				Text_t text = Text_t(5, this->m_iH + g_iBlockSize + 2 + (g_iBlockSize * iCount) - iAnimY, std::move(first.first), pFont, g_flFontSize, (this->m_nAutoSuggestedSelection == iCount) ? g_textColorFocused : g_textColorUnfocused);
-				text.m_iY += 1;
+				Text_t text = Text_t(5, this->m_iH + g_iBlockSize + 2 + (g_iBlockSize * iCount) - iAnimY + g_iBlockSize / 2, std::move(first.first), pFont, g_flFontSize, (this->m_nAutoSuggestedSelection == iCount) ? g_textColorFocused : g_textColorUnfocused);
+				text.m_iY -= text.m_iH / 2;
 
-				const Text_t &tag = Text_t(text.m_iX + text.m_iW + 10, text.m_iY - iAnimY, second.first ? "(Callback)" : "(Identifier)", pFont, g_flFontSize, g_textColorTag);
+				const Text_t &tag = Text_t(text.m_iX + text.m_iW + 10, text.m_iY, second.first ? "(Callback)" : "(Identifier)", pFont, g_flFontSize, g_textColorTag);
 
 				pDraw->Draw(Rectangle_t(0, this->m_iH + g_iBlockSize + 2 + (g_iBlockSize * iCount) - iAnimY, text.m_iW + tag.m_iW + 20, g_iBlockSize, color));
 
