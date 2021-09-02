@@ -14,6 +14,7 @@ struct Color_t {
 	constexpr inline ~Color_t() {};
 
 	constexpr auto operator<=>(const Color_t&) const = default;
+	constexpr bool operator==(const Color_t&) const	 = default;
 
 	const Color_t ModifyA(float flMultiplier) const;
 

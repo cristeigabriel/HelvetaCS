@@ -382,6 +382,7 @@ struct Vector_t {
 		explicit constexpr Make() = default;
 
 		constexpr auto operator<=>(const Make&) const = default;
+		constexpr bool operator==(const Make&) const  = default;
 
 		constexpr void Initialize(const Args&... args) {
 			this->m_rgContents = Pack {{args...}};
