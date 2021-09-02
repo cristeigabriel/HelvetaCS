@@ -129,7 +129,7 @@ void Console_t::WndProc(UINT u32Msg, WPARAM wParam) {
 						this->m_nAutoSuggestedSelection = 0;
 
 						if (!this->m_strInputBuffer.empty() && this->m_iTextScrollX > 0) {
-							this->m_strInputBuffer.erase(this->m_strInputBuffer.begin() + (this->m_iTextScrollX - 1), this->m_strInputBuffer.begin() + this->m_iTextScrollX);
+							this->m_strInputBuffer.erase(this->m_strInputBuffer.begin() + min((this->m_iTextScrollX - 1), this->m_strInputBuffer.size()), this->m_strInputBuffer.begin() + this->m_iTextScrollX);
 							this->m_iTextScrollX = max(0, this->m_iTextScrollX - 1);
 						}
 					}
@@ -230,7 +230,7 @@ void Console_t::Draw(Drawing_t* pDraw) const {
 		if (this->m_bInputFocus) {
 			int iLevel	= (g_iBlockSize - 6) / 2;
 			bool bState = this->m_strInputBuffer.size() == this->m_iTextScrollX;
-			if (bState) {
+			if (bState || this->m_strInputBuffer.empty()) {
 				pDraw->Draw(RectangleGradient_t(6 + iOldW, this->m_iH + 4 - iAnimY, 1, iLevel, g_cursorColor, textColor, false));
 				pDraw->Draw(RectangleGradient_t(6 + iOldW, this->m_iH + 4 + iLevel - iAnimY, 1, iLevel, textColor, g_cursorColor, false));
 			} else {
