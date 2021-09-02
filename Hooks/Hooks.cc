@@ -1,47 +1,38 @@
 #include "Hooks.hh"
-#include "Prototypes.hh"
-#include "../Memory.hh"
 
-#include "../Console/Console.hh"
-
-#include "../Drawing/Drawing.hh"
-#include "../SDK/Constants.hh"
-#include "../SDK/ClientModeShared.hh"
-#include "../SDK/CGlobalVarsBase.hh"
-#include "../SDK/IInputSystem.hh"
-
-#include "../SDK/CUserCmd.hh"
-#include "../SDK/IClientEntityList.hh"
-#include "../SDK/IVEngineClient.hh"
-#include "../SDK/ConVar.hh"
-
-#include "../Entities/CCSPlayer.hh"
-#include "../Entities/Cacher.hh"
-
-#include "../Features/Features.hh"
-
-#include "../Resources/Terminus.hh"
-
-#include <windowsx.h>
 #include <WinUser.h>
+#include <windowsx.h>
+
 #include <iomanip>
 
+#include "../Console/Console.hh"
+#include "../Drawing/Drawing.hh"
+#include "../Entities/CCSPlayer.hh"
+#include "../Entities/Cacher.hh"
+#include "../Features/Features.hh"
 #include "../Globals/Globals.hh"
+#include "../Memory.hh"
+#include "../Resources/Terminus.hh"
+#include "../SDK/CGlobalVarsBase.hh"
+#include "../SDK/CUserCmd.hh"
+#include "../SDK/ClientModeShared.hh"
+#include "../SDK/ConVar.hh"
+#include "../SDK/Constants.hh"
+#include "../SDK/IClientEntityList.hh"
+#include "../SDK/IInputSystem.hh"
+#include "../SDK/IVEngineClient.hh"
+#include "Prototypes.hh"
 int ::g_iMouseX = 0;
 int ::g_iMouseY = 0;
 
-HRESULT __fastcall EndScene::Hooked(void *pThisPtr, void *pEdx, IDirect3DDevice9 *pDevice)
-{
+HRESULT __fastcall EndScene::Hooked(void* pThisPtr, void* pEdx, IDirect3DDevice9* pDevice) {
 	g_pConsole->Think();
-	g_pDrawing->Run([](Drawing_t *pDrawing)
-					{ g_pConsole->Draw(pDrawing); });
+	g_pDrawing->Run([](Drawing_t* pDrawing) { g_pConsole->Draw(pDrawing); });
 	return Original(pThisPtr, pEdx, pDevice);
 }
 
-LRESULT WINAPI WndProc::Hooked(HWND hwndWindow, UINT u32Msg, WPARAM wParam, LPARAM lParam)
-{
-	if (u32Msg == WM_MOUSEMOVE)
-	{
+LRESULT WINAPI WndProc::Hooked(HWND hwndWindow, UINT u32Msg, WPARAM wParam, LPARAM lParam) {
+	if (u32Msg == WM_MOUSEMOVE) {
 		g_iMouseX = GET_X_LPARAM(lParam);
 		g_iMouseY = GET_Y_LPARAM(lParam);
 	}
@@ -55,57 +46,48 @@ LRESULT WINAPI WndProc::Hooked(HWND hwndWindow, UINT u32Msg, WPARAM wParam, LPAR
 	return CallWindowProcW(Original, hwndWindow, u32Msg, wParam, lParam);
 }
 
-void __cdecl VGUI_OnSplitScreenStateChanged::Hooked()
-{
+void __cdecl VGUI_OnSplitScreenStateChanged::Hooked() {
 	Original();
 
 	//	Here ClientModeShared m_nRootSize is updated
 	g_pDrawing->UpdateIO(g_pMemory->m_pClientModeShared->m_nRootSize[0], g_pMemory->m_pClientModeShared->m_nRootSize[1]);
 }
 
-void __stdcall FrameStageNotify::Hooked(int iStage)
-{
-	static Queue_t &ESPQueue = g_pDrawing->GetQueue(HASH("ESP"));
-	ESPQueue.Run([&](Queue_t *pQueue)
-				 { Features::g_Visuals.Run(pQueue); });
+void __stdcall FrameStageNotify::Hooked(int iStage) {
+	static Queue_t& ESPQueue = g_pDrawing->GetQueue(HASH("ESP"));
+	ESPQueue.Run([&](Queue_t* pQueue) { Features::g_Visuals.Run(pQueue); });
 	Original(iStage);
 }
 
-void __fastcall OnAddEntity::Hooked(void *pThisPtr, void *pEdx, void *pArg1, int iHandle)
-{
-	CCSPlayer *pPl = g_pMemory->m_pEntityList->GetFromHandle<CCSPlayer *>(iHandle);
-	g_pEntityCache->Add(pPl);
+void __fastcall OnAddEntity::Hooked(void* pThisPtr, void* pEdx, void* pArg1, int iHandle) {
+	CCSPlayer* pPl = g_pMemory->m_pEntityList->GetFromHandle<CCSPlayer*>(iHandle);
+	g_EntityCache.Add(pPl);
 	Original(pThisPtr, pEdx, pArg1, iHandle);
 }
 
-void __fastcall OnRemoveEntity::Hooked(void *pThisPtr, void *pEdx, void *pArg1, int iHandle)
-{
-	CCSPlayer *pPl = g_pMemory->m_pEntityList->GetFromHandle<CCSPlayer *>(iHandle);
-	g_pEntityCache->Remove(pPl);
+void __fastcall OnRemoveEntity::Hooked(void* pThisPtr, void* pEdx, void* pArg1, int iHandle) {
+	CCSPlayer* pPl = g_pMemory->m_pEntityList->GetFromHandle<CCSPlayer*>(iHandle);
+	g_EntityCache.Remove(pPl);
 	Original(pThisPtr, pEdx, pArg1, iHandle);
 }
 
-void __stdcall LevelInitPreEntity::Hooked(const char *szName)
-{
+void __stdcall LevelInitPreEntity::Hooked(const char* szName) {
 	float flTickrate = 1.F / g_pMemory->m_pGlobalVars->m_flIntervalPerTick;
 
 	g_pMemory->m_CVars.cl_cmdrate->SetValue(flTickrate);
 	g_pMemory->m_CVars.cl_updaterate->SetValue(flTickrate);
 
-	g_pEntityCache->Reset();
+	g_EntityCache.Reset();
 	Features::g_Visuals.Reset();
 	Original(szName);
 }
 
-void __cdecl LevelInitPostEntity::Hooked()
-{
+void __cdecl LevelInitPostEntity::Hooked() {
 	Original();
 }
 
-bool __stdcall CreateMove::Hooked(float flSampleTime, SDK::CUserCmd *pCmd)
-{
-	if (!g_pMemory->m_pEngineClient->InGame() || !flSampleTime || !pCmd || (pCmd && !pCmd->m_nCommandNumber) || !g_pMemory->LocalPlayer() || (g_pMemory->LocalPlayer() && !g_pMemory->LocalPlayer()->Alive()))
-	{
+bool __stdcall CreateMove::Hooked(float flSampleTime, SDK::CUserCmd* pCmd) {
+	if (!g_pMemory->m_pEngineClient->InGame() || !flSampleTime || !pCmd || (pCmd && !pCmd->m_nCommandNumber) || !g_pMemory->LocalPlayer() || (g_pMemory->LocalPlayer() && !g_pMemory->LocalPlayer()->Alive())) {
 		return Original(flSampleTime, pCmd);
 	}
 
@@ -120,14 +102,12 @@ bool __stdcall CreateMove::Hooked(float flSampleTime, SDK::CUserCmd *pCmd)
 	return false;
 }
 
-void __fastcall PlayStepSound::Hooked(CCSPlayer *pThisPtr, void *pEdx, Vector_t<float>::V3 &vecOrigin, void *pSurface, float flVolume, bool bForce, void *pArg)
-{
+void __fastcall PlayStepSound::Hooked(CCSPlayer* pThisPtr, void* pEdx, Vector_t<float>::V3& vecOrigin, void* pSurface, float flVolume, bool bForce, void* pArg) {
 	Features::g_Visuals.AddFootstep(pThisPtr, vecOrigin);
 	Original(pThisPtr, pEdx, vecOrigin, pSurface, flVolume, bForce, pArg);
 }
 
-bool __cdecl GlowEffectSpectator::Hooked(CCSPlayer *pPl, CCSPlayer *pLocal, int iStyle, Vector_t<float>::V3 &vecColor, float &flAlphaStart, float &flAlpha, float &flTimeStart, float &flTimeTarget, bool &bAnim)
-{
+bool __cdecl GlowEffectSpectator::Hooked(CCSPlayer* pPl, CCSPlayer* pLocal, int iStyle, Vector_t<float>::V3& vecColor, float& flAlphaStart, float& flAlpha, float& flTimeStart, float& flTimeTarget, bool& bAnim) {
 	if (BOOL_GET(bRef, "esp.glow"); !bRef)
 		return Original(pPl, pLocal, iStyle, vecColor, flAlphaStart, flAlpha, flTimeStart, flTimeTarget, bAnim);
 
@@ -143,7 +123,7 @@ bool __cdecl GlowEffectSpectator::Hooked(CCSPlayer *pPl, CCSPlayer *pLocal, int 
 	vecColor[0] = glowColor.m_u8R / 255.F;
 	vecColor[1] = glowColor.m_u8G / 255.F;
 	vecColor[2] = glowColor.m_u8B / 255.F;
-	flAlpha = glowColor.m_u8A / 255.F;
+	flAlpha		= glowColor.m_u8A / 255.F;
 
 	return pPl != pLocal;
 }
@@ -153,10 +133,10 @@ bool __cdecl GlowEffectSpectator::Hooked(CCSPlayer *pPl, CCSPlayer *pLocal, int 
  * 
  */
 //	========================================================================================================================================
-#define HOOK_PAD(x, pad, ...)                                 \
-	static_assert(sizeof(#x) <= 40);                          \
-	static void *CONCAT(p, x) = __VA_ARGS__.Get<void *>(pad); \
-	g_pMemory->ApplyHook<x>(CONCAT(p, x));                    \
+#define HOOK_PAD(x, pad, ...) \
+	static_assert(sizeof(#x) <= 40); \
+	static void* CONCAT(p, x) = __VA_ARGS__.Get<void*>(pad); \
+	g_pMemory->ApplyHook<x>(CONCAT(p, x)); \
 	LOG(#x << std::setw(Helveta::DataHolder_t<40 - Helveta::detail::strlen(#x)>::value) << "->" << std::setw(10) << std::hex << CONCAT(p, x))
 
 #define HOOK(x, ...) HOOK_PAD(x, 0, __VA_ARGS__)
@@ -166,8 +146,7 @@ bool __cdecl GlowEffectSpectator::Hooked(CCSPlayer *pPl, CCSPlayer *pLocal, int 
  * @brief Bootstrap everything after memory initialization with it's contained data.
  * 
  */
-void Hooks::Bootstrap()
-{
+void Hooks::Bootstrap() {
 	hwndWindow = FindWindowA("Valve001", nullptr);
 
 	//	Set up drawing manager.
@@ -184,26 +163,23 @@ void Hooks::Bootstrap()
 	{
 		g_pConsole->AddIdentifier("misc.no_duck_delay", false);
 		g_pConsole->AddIdentifier("misc.bunny_hop", false);
-		g_pConsole->AddCallback("misc.unlock_convar", [](Console_t *pConsole)
-								{
-									static SDK::ConVar *pFirstCVar = *g_pMemory->m_Client.FindPattern(STB("6A 00 51 C7 04 24 ? ? ? ? 6A 00 51 C7 04 24 ? ? ? ? B9 ? ? ? ?")).FollowUntil(0xB9, true).Get<SDK::ConVar **>(1);
-									if (!pFirstCVar)
-										return false;
+		g_pConsole->AddCallback("misc.unlock_convar", [](Console_t* pConsole) {
+			static SDK::ConVar* pFirstCVar = *g_pMemory->m_Client.FindPattern(STB("6A 00 51 C7 04 24 ? ? ? ? 6A 00 51 C7 04 24 ? ? ? ? B9 ? ? ? ?")).FollowUntil(0xB9, true).Get<SDK::ConVar**>(1);
+			if (!pFirstCVar)
+				return false;
 
-									int iCount = 0;
-									for (SDK::ConVar *pCVar = pFirstCVar; pCVar; pCVar = pCVar->m_pNext)
-									{
-										//	(1 << 1) = 2 = FCVAR_DEVELOPMENTONLY
-										if (pCVar->m_fFlags & 2)
-										{
-											pCVar->m_fFlags &= ~2;
-											++iCount;
-										}
-									}
+			int iCount = 0;
+			for (SDK::ConVar* pCVar = pFirstCVar; pCVar; pCVar = pCVar->m_pNext) {
+				//	(1 << 1) = 2 = FCVAR_DEVELOPMENTONLY
+				if (pCVar->m_fFlags & 2) {
+					pCVar->m_fFlags &= ~2;
+					++iCount;
+				}
+			}
 
-									pConsole->WriteToBuffer("Unlocked " + std::to_string(iCount) + " Convars.");
-									return true;
-								});
+			pConsole->WriteToBuffer("Unlocked " + std::to_string(iCount) + " Convars.");
+			return true;
+		});
 
 		g_pConsole->AddIdentifier("esp.filters.enemies", false);
 		g_pConsole->AddIdentifier("esp.filters.teammates", false);
@@ -222,42 +198,36 @@ void Hooks::Bootstrap()
 		g_pConsole->AddIdentifier("esp.glow", false);
 		g_pConsole->AddIdentifier("esp.glow_color", Color_t(0, 255, 0, 255));
 
-		g_pConsole->AddCallback("config.save", [](Console_t *pConsole)
-								{
-									pConsole->SaveConfig();
-									return true;
-								});
+		g_pConsole->AddCallback("config.save", [](Console_t* pConsole) {
+			pConsole->SaveConfig();
+			return true;
+		});
 
-		g_pConsole->AddCallback("config.load", [](Console_t *pConsole)
-								{ return pConsole->LoadConfig(); });
+		g_pConsole->AddCallback("config.load", [](Console_t* pConsole) { return pConsole->LoadConfig(); });
 
-		g_pConsole->AddCallback("help", [](Console_t *pConsole)
-								{
-									if (pConsole->m_vecCollection.empty())
-										return false;
+		g_pConsole->AddCallback("help", [](Console_t* pConsole) {
+			if (pConsole->m_vecCollection.empty())
+				return false;
 
-									pConsole->WriteToBuffer("- The following represents all the available help material");
-									for (const auto &[first, second] : pConsole->m_vecCollection)
-									{
-										pConsole->WriteToBuffer(first.first + ": " + (second.first ? "Callback (command)" : "Identifier (value)"));
-									}
+			pConsole->WriteToBuffer("- The following represents all the available help material");
+			for (const auto& [first, second] : pConsole->m_vecCollection) {
+				pConsole->WriteToBuffer(first.first + ": " + (second.first ? "Callback (command)" : "Identifier (value)"));
+			}
 
-									return true;
-								});
+			return true;
+		});
 	}
 
-	g_pNetvars = std::make_unique<Netvars_t>(g_pMemory->m_pClientClassHead);
-
-	g_pEntityCache = std::make_unique<EntityCacher_t>();
+	::g_Netvars = std::move(Netvars_t(g_pMemory->m_pClientClassHead));
 
 	//	Finally, hooks.
-	WndProc::Original = (WndProc::Fn_t *)SetWindowLongA(hwndWindow, GWL_WNDPROC, (LONG_PTR)WndProc::Hooked);
+	WndProc::Original = (WndProc::Fn_t*)SetWindowLongA(hwndWindow, GWL_WNDPROC, (LONG_PTR)WndProc::Hooked);
 	HOOK(EndScene, Memory::Pointer_t(Memory::VirtualFunction<42>(g_pMemory->m_pDevice)));
 	HOOK(VGUI_OnSplitScreenStateChanged, g_pMemory->m_Client.FindString<"fov_desired", true>(0xA3).FollowUntil(0x55, false));
 	HOOK(FrameStageNotify, g_pMemory->m_Client.FindString<"Setting fallback player %s as local player\n", false>().FollowUntil(0x55, false));
 	HOOK(OnAddEntity, g_pMemory->m_Client.FindPattern(STB("55 8B EC 51 8B 45 0C 53 56 8B F1 57")));
 	HOOK(OnRemoveEntity, g_pMemory->m_Client.FindPattern(STB("55 8B EC 51 8B 45 0C 53 8B D9 56 57 83 F8 FF 75 07")));
-	static const Memory::Pointer_t &levelInitPrePost = g_pMemory->m_Client.FindString<"(mapname)", false>();
+	static const Memory::Pointer_t& levelInitPrePost = g_pMemory->m_Client.FindString<"(mapname)", false>();
 	//	@22aug opcode intersection with address
 	HOOK(LevelInitPreEntity, levelInitPrePost.FollowUntil(0xEC, false).FollowUntil(0x55, false));
 	HOOK(LevelInitPostEntity, levelInitPrePost.FollowUntil(0x55, true));

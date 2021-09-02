@@ -40,7 +40,7 @@ HMODULE WINAPI GetModuleW(_In_opt_ LPCWSTR lpModuleName);
 /// </summary>
 /// <param name="Base">The base address of an image that is mapped into memory by a call to the MapViewOfFile / ReadFile function</param>
 /// <returns>If the function succeeds, the return value is a pointer to an IMAGE_NT_HEADERS structure</returns>
-IMAGE_NT_HEADERS *WINAPI ImageNtHeader(_In_ PVOID Base);
+IMAGE_NT_HEADERS* WINAPI ImageNtHeader(_In_ PVOID Base);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //			Equivalent to the windows api function ImageDirectoryEntryToDataEx
@@ -53,7 +53,7 @@ IMAGE_NT_HEADERS *WINAPI ImageNtHeader(_In_ PVOID Base);
 /// <param name="DirectoryEntry">The directory entry to be located</param>
 /// <param name="Size">A pointer to a variable that receives the size of the data for the directory entry that is located</param>
 /// <returns>If the function succeeds, the return value is a pointer to the data for the directory entry</returns>
-PVOID WINAPI ImageDirectoryEntryToDataEx(PVOID Base, BOOLEAN MappedAsImage, USHORT DirectoryEntry, ULONG *Size);
+PVOID WINAPI ImageDirectoryEntryToDataEx(PVOID Base, BOOLEAN MappedAsImage, USHORT DirectoryEntry, ULONG* Size);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //			Equivalent to the windows api function ImageRvaToSection and ImageRvaToVa
@@ -65,7 +65,7 @@ PVOID WINAPI ImageDirectoryEntryToDataEx(PVOID Base, BOOLEAN MappedAsImage, USHO
 /// <param name="Base">This parameter is reserved</param>
 /// <param name="Rva">The relative virtual address to be located</param>
 /// <returns>If the function succeeds, the return value is a pointer to an IMAGE_SECTION_HEADER structure</returns>
-IMAGE_SECTION_HEADER *WINAPI ImageRvaToSection(PIMAGE_NT_HEADERS NtHeaders, PVOID Base, ULONG Rva);
+IMAGE_SECTION_HEADER* WINAPI ImageRvaToSection(PIMAGE_NT_HEADERS NtHeaders, PVOID Base, ULONG Rva);
 
 /// <summary>
 /// Locates a relative virtual address (RVA) within the image header of a file that is mapped as a file and returns the virtual address of the corresponding byte in the file.
@@ -74,7 +74,7 @@ IMAGE_SECTION_HEADER *WINAPI ImageRvaToSection(PIMAGE_NT_HEADERS NtHeaders, PVOI
 /// <param name="Base">The base address of an image that is mapped into memory through a call to the MapViewOfFile function</param>
 /// <param name="Rva">The relative virtual address to be located</param>
 /// <returns>If the function succeeds, the return value is the virtual address in the mapped file</returns>
-PVOID WINAPI ImageRvaToVa(PIMAGE_NT_HEADERS NtHeaders, void *Base, DWORD Rva);
+PVOID WINAPI ImageRvaToVa(PIMAGE_NT_HEADERS NtHeaders, void* Base, DWORD Rva);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //			Opposite to the windows api function ImageRvaToSection and ImageRvaToVa
@@ -86,7 +86,7 @@ PVOID WINAPI ImageRvaToVa(PIMAGE_NT_HEADERS NtHeaders, void *Base, DWORD Rva);
 /// <param name="Base">This parameter is reserved</param>
 /// <param name="Va">Pointer to data inside the Images buffer</param>
 /// <returns>If the function succeeds, the return value is a pointer to an IMAGE_SECTION_HEADER structure</returns>
-IMAGE_SECTION_HEADER *WINAPI ImageVaToSection(PIMAGE_NT_HEADERS NtHeaders, PVOID Base, void *Va);
+IMAGE_SECTION_HEADER* WINAPI ImageVaToSection(PIMAGE_NT_HEADERS NtHeaders, PVOID Base, void* Va);
 
 /// <summary>
 /// Locates the relative virtual address (RVA) of a pointer into the non mapped file buffer
@@ -95,7 +95,7 @@ IMAGE_SECTION_HEADER *WINAPI ImageVaToSection(PIMAGE_NT_HEADERS NtHeaders, PVOID
 /// <param name="Base">The base address of an image that is mapped into memory through a call to the MapViewOfFile function</param>
 /// <param name="VA">ointer to data inside the Images buffer</param>
 /// <returns>If the function succeeds, the return value is the relative virtual address (RVA) in the mapped file</returns>
-DWORD WINAPI ImageVaToRva(PIMAGE_NT_HEADERS NtHeaders, void *Base, void *Va);
+DWORD WINAPI ImageVaToRva(PIMAGE_NT_HEADERS NtHeaders, void* Base, void* Va);
 
 /// <summary>
 /// Locates the relative virtual address (RVA) of a pointer into the non mapped file buffer
@@ -103,10 +103,10 @@ DWORD WINAPI ImageVaToRva(PIMAGE_NT_HEADERS NtHeaders, void *Base, void *Va);
 /// <param name="Base">The base address of an image that is mapped into memory through a call to the MapViewOfFile function</param>
 /// <param name="VA">ointer to data inside the Images buffer</param>
 /// <returns>If the function succeeds, the return value is the relative virtual address (RVA) in the mapped file</returns>
-DWORD WINAPI ImageVaToRva(void *Base, void *Va);
+DWORD WINAPI ImageVaToRva(void* Base, void* Va);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //							Utility functions for GetModuleW
 //////////////////////////////////////////////////////////////////////////////////////////////////
-wchar_t *GetFileNameFromPath(wchar_t *Path);
-wchar_t *RemoveFileExtension(wchar_t *FullFileName, wchar_t *OutputBuffer, DWORD OutputBufferSize);
+wchar_t* GetFileNameFromPath(wchar_t* Path);
+wchar_t* RemoveFileExtension(wchar_t* FullFileName, wchar_t* OutputBuffer, DWORD OutputBufferSize);

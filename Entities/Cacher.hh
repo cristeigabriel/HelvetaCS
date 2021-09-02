@@ -1,23 +1,23 @@
 #pragma once
 
-#include "Forward.hh"
+#include <functional>
 #include <memory>
 #include <vector>
-#include <functional>
 
-struct EntityCacher_t
-{
+#include "Forward.hh"
+
+struct EntityCacher_t {
 	EntityCacher_t();
-	inline ~EntityCacher_t(){};
+	inline ~EntityCacher_t() {};
 
-	void Add(CCSPlayer *pPl);
-	void Remove(CCSPlayer *pPl);
+	void Add(CCSPlayer* pPl);
+	void Remove(CCSPlayer* pPl);
 	void Reset();
 
-	void Loop(const std::function<void(CCSPlayer *)> &runFn) const;
+	void Loop(const std::function<void(CCSPlayer*)>& runFn) const;
 
-private:
-	std::vector<CCSPlayer *> m_vecPlayers = {};
+  private:
+	std::vector<CCSPlayer*> m_vecPlayers = {};
 };
 
-inline std::unique_ptr<EntityCacher_t> g_pEntityCache;
+inline EntityCacher_t g_EntityCache;

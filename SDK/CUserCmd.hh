@@ -1,13 +1,12 @@
 #pragma once
 
-#include "Forward.hh"
 #include "../Helpers/Helpers.hh"
+#include "Forward.hh"
 
-class SDK::CUserCmd
-{
+class SDK::CUserCmd {
 	PAD(4);
 
-public:
+  public:
 	int m_nCommandNumber;
 	int m_iTickCount;
 

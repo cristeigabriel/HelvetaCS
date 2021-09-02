@@ -1,21 +1,23 @@
 #pragma once
 
-#include "../SDK/Forward.hh"
-#include "../Helpers/Helpers.hh"
 #include <memory>
-#include <unordered_map>
 #include <type_traits>
+#include <unordered_map>
 
-struct Netvars_t
-{
-	Netvars_t() = delete;
-	Netvars_t(SDK::ClientClass *pClassHead);
-	inline ~Netvars_t(){};
+#include "../Helpers/Helpers.hh"
+#include "../SDK/Forward.hh"
+
+struct Netvars_t {
+	inline Netvars_t() = default;
+	Netvars_t(SDK::ClientClass* pClassHead);
+	inline ~Netvars_t() {};
+
+	DEFAULT_COPY_MOVE_INIT_ASSIGN(Netvars_t);
 
 	ptrdiff_t Get(Hash_t hClass, Hash_t hProperty) const;
 
-private:
-	void Dump(const char *szNetworkName, SDK::RecvTable *pTable, ptrdiff_t ptrdiffOffset = 0);
+  private:
+	void Dump(const char* szNetworkName, SDK::RecvTable* pTable, ptrdiff_t ptrdiffOffset = 0);
 
 	std::unordered_map<Hash_t, std::unordered_map<Hash_t, ptrdiff_t>> m_umPtrdiffs;
 };
@@ -53,66 +55,58 @@ private:
  * 
  */
 //	========================================================================================================================================
-#define NETWORKED_CLASS(x, ...)                   \
-	class x                                       \
-	{                                             \
+#define NETWORKED_CLASS(x, ...) \
+	class x { \
 		constexpr static Hash_t hHash = HASH(#x); \
-                                                  \
-	public:                                       \
-		__VA_ARGS__                               \
+\
+	  public: \
+		__VA_ARGS__ \
 	};
 
-#define NETWORKED_CLASS_INHERIT(x, inherit, ...)  \
-	class x : public inherit                      \
-	{                                             \
+#define NETWORKED_CLASS_INHERIT(x, inherit, ...) \
+	class x: public inherit { \
 		constexpr static Hash_t hHash = HASH(#x); \
-                                                  \
-	public:                                       \
-		__VA_ARGS__                               \
+\
+	  public: \
+		__VA_ARGS__ \
 	};
 
-#define NETWORKED_VARIABLE_DEDUCE(x)                                             \
-	GET_TYPE(#x) & x()                                                           \
-	{                                                                            \
-		static ptrdiff_t CONCAT(x, _ptrdiff) = g_pNetvars->Get(hHash, HASH(#x)); \
-		return *(GET_TYPE(#x) *)((uintptr_t)this + CONCAT(x, _ptrdiff));         \
+#define NETWORKED_VARIABLE_DEDUCE(x) \
+	GET_TYPE(#x) & x() { \
+		static ptrdiff_t CONCAT(x, _ptrdiff) = g_Netvars.Get(hHash, HASH(#x)); \
+		return *(GET_TYPE(#x)*)((uintptr_t)this + CONCAT(x, _ptrdiff)); \
 	}
 
-#define PNETWORKED_VARIABLE_DEDUCE(x)                                            \
-	GET_TYPE(#x)                                                                 \
-	x()                                                                          \
-	{                                                                            \
-		static ptrdiff_t CONCAT(x, _ptrdiff) = g_pNetvars->Get(hHash, HASH(#x)); \
-		return (GET_TYPE(#x))((uintptr_t)this + CONCAT(x, _ptrdiff));            \
+#define PNETWORKED_VARIABLE_DEDUCE(x) \
+	GET_TYPE(#x) \
+	x() { \
+		static ptrdiff_t CONCAT(x, _ptrdiff) = g_Netvars.Get(hHash, HASH(#x)); \
+		return (GET_TYPE(#x))((uintptr_t)this + CONCAT(x, _ptrdiff)); \
 	}
 
-#define NETWORKED_VARIABLE_DEDUCE_NN(x)                                          \
-	GET_TYPE_NN(#x) & x()                                                        \
-	{                                                                            \
-		static ptrdiff_t CONCAT(x, _ptrdiff) = g_pNetvars->Get(hHash, HASH(#x)); \
-		return *(GET_TYPE_NN(#x) *)((uintptr_t)this + CONCAT(x, _ptrdiff));      \
+#define NETWORKED_VARIABLE_DEDUCE_NN(x) \
+	GET_TYPE_NN(#x) & x() { \
+		static ptrdiff_t CONCAT(x, _ptrdiff) = g_Netvars.Get(hHash, HASH(#x)); \
+		return *(GET_TYPE_NN(#x)*)((uintptr_t)this + CONCAT(x, _ptrdiff)); \
 	}
 
-#define NETWORKED_VARIABLE_DEDUCE_SI(x)                                               \
-	GET_TYPE_SI(#x) & x()                                                             \
-	{                                                                                 \
-		static ptrdiff_t CONCAT(x, _ptrdiff) = g_pNetvars->Get(HASH(hHash, HASH(#x)); \
-		return *(GET_TYPE_SI(#x) *)((uintptr_t)this + CONCAT(x, _ptrdiff));           \
+#define NETWORKED_VARIABLE_DEDUCE_SI(x) \
+	GET_TYPE_SI(#x) & x() { \
+		static ptrdiff_t CONCAT(x, _ptrdiff) = g_Netvars.Get(HASH(hHash, HASH(#x)); \
+		return *(GET_TYPE_SI(#x) *)((uintptr_t)this + CONCAT(x, _ptrdiff)); \
 	}
 
-#define NETWORKED_VARIABLE_SPECIFIER(t, x)                                       \
-	t &x()                                                                       \
-	{                                                                            \
-		static ptrdiff_t CONCAT(x, _ptrdiff) = g_pNetvars->Get(hHash, HASH(#x)); \
-		return *(t *)((uintptr_t)this + CONCAT(x, _ptrdiff));                    \
+#define NETWORKED_VARIABLE_SPECIFIER(t, x) \
+	t& x() { \
+		static ptrdiff_t CONCAT(x, _ptrdiff) = g_Netvars.Get(hHash, HASH(#x)); \
+		return *(t*)((uintptr_t)this + CONCAT(x, _ptrdiff)); \
 	}
 
-#define OFFSET(t, n, x)                                       \
-	t &n()                                                    \
-	{                                                         \
-		static ptrdiff_t CONCAT(n, _ptrdiff) = x;             \
-		return *(t *)((uintptr_t)this + CONCAT(n, _ptrdiff)); \
+#define OFFSET(t, n, x) \
+	t& n() { \
+		static ptrdiff_t CONCAT(n, _ptrdiff) = x; \
+		return *(t*)((uintptr_t)this + CONCAT(n, _ptrdiff)); \
 	}
 //	========================================================================================================================================
 
-inline std::unique_ptr<Netvars_t> g_pNetvars;
+inline Netvars_t g_Netvars;

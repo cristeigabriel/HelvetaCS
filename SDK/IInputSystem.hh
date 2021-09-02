@@ -2,8 +2,7 @@
 
 #include "Forward.hh"
 
-class SDK::IInputSystem
-{
-public:
+class SDK::IInputSystem {
+  public:
 	void EnableInput(bool bState);
 };

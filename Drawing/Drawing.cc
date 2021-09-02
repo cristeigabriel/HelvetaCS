@@ -1,11 +1,11 @@
 #include "Drawing.hh"
+
 #include "../Vendor/ImGui/imgui.h"
 #include "../Vendor/ImGui/imgui_impl_dx9.h"
 #undef NDEBUG
 #include <assert.h>
 
-Drawing_t::Drawing_t(IDirect3DDevice9 *pDevice, int iScreenW, int iScreenH)
-{
+Drawing_t::Drawing_t(IDirect3DDevice9* pDevice, int iScreenW, int iScreenH) {
 	this->m_pDevice = pDevice;
 	assert(this->m_pDevice);
 
@@ -18,8 +18,7 @@ Drawing_t::Drawing_t(IDirect3DDevice9 *pDevice, int iScreenW, int iScreenH)
 	UpdateIO(iScreenW, iScreenH);
 }
 
-void Drawing_t::UpdateIO(int iScreenW, int iScreenH)
-{
+void Drawing_t::UpdateIO(int iScreenW, int iScreenH) {
 	this->m_iScreenW = iScreenW;
 	this->m_iScreenH = iScreenH;
 
@@ -31,13 +30,11 @@ void Drawing_t::UpdateIO(int iScreenW, int iScreenH)
  * @note: This procses leads to static dispatch.
  * 
  */
-void Drawing_t::Draw(const Base_t &renderable) const
-{
+void Drawing_t::Draw(const Base_t& renderable) const {
 	renderable.Draw(this->m_pDrawList);
 }
 
-void Drawing_t::Run(const std::function<void(Drawing_t *)> &runFn)
-{
+void Drawing_t::Run(const std::function<void(Drawing_t*)>& runFn) {
 	ImGui_ImplDX9_NewFrame();
 	ImGui::NewFrame();
 
@@ -50,7 +47,7 @@ void Drawing_t::Run(const std::function<void(Drawing_t *)> &runFn)
 	//	Hack ahead:
 	//	To fix a lighting bug we're creating our own state block to have control over color
 	//	write or shaders. Please don't crucify me.
-	IDirect3DStateBlock9 *pStateBlock = nullptr;
+	IDirect3DStateBlock9* pStateBlock = nullptr;
 	if (this->m_pDevice->CreateStateBlock(D3DSBT_ALL, &pStateBlock) != D3D_OK)
 		return;
 
@@ -59,7 +56,7 @@ void Drawing_t::Run(const std::function<void(Drawing_t *)> &runFn)
 
 	//	Store old data
 	DWORD dwColorWrite = 0;
-	DWORD dwSRGBWrite = 0;
+	DWORD dwSRGBWrite  = 0;
 	this->m_pDevice->GetRenderState(D3DRS_COLORWRITEENABLE, &dwColorWrite);
 	this->m_pDevice->GetRenderState(D3DRS_SRGBWRITEENABLE, &dwSRGBWrite);
 
@@ -71,19 +68,17 @@ void Drawing_t::Run(const std::function<void(Drawing_t *)> &runFn)
 
 	std::unique_lock<std::shared_mutex> lock(this->m_mutLock);
 
-	for (const auto &[key, value] : this->m_umQueues)
-	{
+	for (const auto& [key, value] : this->m_umQueues) {
 		if (!value.first)
-			for (const auto &entry : value.second.m_vecRenderables)
+			for (const auto& entry : value.second.m_vecRenderables)
 				entry->Draw(this->m_pDrawList);
 	}
 
 	runFn(this);
 
-	for (const auto &[key, value] : this->m_umQueues)
-	{
+	for (const auto& [key, value] : this->m_umQueues) {
 		if (value.first)
-			for (const auto &entry : value.second.m_vecRenderables)
+			for (const auto& entry : value.second.m_vecRenderables)
 				entry->Draw(this->m_pDrawList);
 	}
 
@@ -100,49 +95,40 @@ void Drawing_t::Run(const std::function<void(Drawing_t *)> &runFn)
 	this->m_pDevice->SetRenderState(D3DRS_SRGBWRITEENABLE, dwSRGBWrite);
 }
 
-void Drawing_t::PushClip(int iX, int iY, int iW, int iH) const
-{
+void Drawing_t::PushClip(int iX, int iY, int iW, int iH) const {
 	this->m_pDrawList->PushClipRect(ImVec2((float)(iX), (float)(iY)), ImVec2((float)(iX + iW), (float)(iY + iH)), true);
 }
 
-void Drawing_t::PopClip() const
-{
+void Drawing_t::PopClip() const {
 	this->m_pDrawList->PopClipRect();
 }
 
-void Drawing_t::AddQueue(Hash_t hKey, bool bAfter)
-{
+void Drawing_t::AddQueue(Hash_t hKey, bool bAfter) {
 	this->m_umQueues[hKey] = std::make_pair(bAfter, Queue_t());
 }
 
-void Drawing_t::AddQueueLocked(Hash_t hKey, bool bAfter)
-{
+void Drawing_t::AddQueueLocked(Hash_t hKey, bool bAfter) {
 	this->m_umQueues[hKey] = std::make_pair(bAfter, Queue_t(&this->m_mutLock));
 }
 
-Queue_t &Drawing_t::GetQueue(Hash_t hKey)
-{
+Queue_t& Drawing_t::GetQueue(Hash_t hKey) {
 	return this->m_umQueues[hKey].second;
 }
 
-void Drawing_t::RemoveQueue(Hash_t hKey)
-{
+void Drawing_t::RemoveQueue(Hash_t hKey) {
 	if (this->m_umQueues.contains(hKey))
 		this->m_umQueues.erase(hKey);
 }
 
-void Drawing_t::AddFont(Hash_t hKey, const void *pContents, uint32_t u32Size, float flSize)
-{
+void Drawing_t::AddFont(Hash_t hKey, const void* pContents, uint32_t u32Size, float flSize) {
 	this->m_umFonts[hKey] = this->m_pImGuiIO->Fonts->AddFontFromMemoryCompressedTTF(pContents, u32Size, flSize);
 }
 
-const ImFont *Drawing_t::GetFont(Hash_t hKey) const
-{
+const ImFont* Drawing_t::GetFont(Hash_t hKey) const {
 	return this->m_umFonts.at(hKey);
 }
 
-void Drawing_t::RemoveFont(Hash_t hKey)
-{
+void Drawing_t::RemoveFont(Hash_t hKey) {
 	if (this->m_umFonts.contains(hKey))
 		this->m_umFonts.erase(hKey);
 }

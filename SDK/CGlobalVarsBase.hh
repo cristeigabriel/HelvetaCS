@@ -2,9 +2,8 @@
 
 #include "Forward.hh"
 
-class SDK::CGlobalVarsBase
-{
-public:
+class SDK::CGlobalVarsBase {
+  public:
 	float m_flRealTime;
 	int m_nFrameCount;
 

@@ -1,14 +1,13 @@
 #pragma once
 
-#include "Forward.hh"
-#include "../Helpers/Helpers.hh"
 #include <cinttypes>
 
-struct PlayerInfo_t
-{
+#include "../Helpers/Helpers.hh"
+#include "Forward.hh"
+
+struct PlayerInfo_t {
 	uint64_t m_nVersion;
-	union
-	{
+	union {
 		uint64_t m_nSteamID;
 		struct
 		{
@@ -27,15 +26,14 @@ struct PlayerInfo_t
 	uint8_t m_nFilesDownloaded;
 };
 
-class SDK::IVEngineClient
-{
-public:
-	bool GetPlayerInfo(int iIdx, const PlayerInfo_t *pInfo);
+class SDK::IVEngineClient {
+  public:
+	bool GetPlayerInfo(int iIdx, const PlayerInfo_t* pInfo);
 	bool InGame();
-	void SetViewAngles(Vector_t<float>::V3 *pVecAngles);
-	void GetViewAngles(Vector_t<float>::V3 *pVecAngles);
-	const char *GetGameDirectory();
-	const char *GetLevelName();
-	const char *GetLevelNameShort();
-	void ExecuteClientCmd(const char *szName);
+	void SetViewAngles(Vector_t<float>::V3* pVecAngles);
+	void GetViewAngles(Vector_t<float>::V3* pVecAngles);
+	const char* GetGameDirectory();
+	const char* GetLevelName();
+	const char* GetLevelNameShort();
+	void ExecuteClientCmd(const char* szName);
 };
