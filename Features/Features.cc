@@ -60,9 +60,9 @@ static bool ComputeBoundingBox(CCSPlayer* pPl, Vector_t<int>::V4& vecOut) {
 			return false;
 	}
 
-	float flLeft = rgScreen[3][0];
-	float flRight = rgScreen[3][0];
-	float flTop = rgScreen[3][1];
+	float flLeft   = rgScreen[3][0];
+	float flRight  = rgScreen[3][0];
+	float flTop	   = rgScreen[3][1];
 	float flBottom = rgScreen[3][1];
 
 	for (int i = 1; i < 8; ++i) {
@@ -116,7 +116,7 @@ void Features::Visuals_t::Run(Queue_t* pQueue) {
 		animator.Set(!pPl->Networkable()->IsDormant(), Animation_t {3.F, Easing::OutQuart}, Animation_t {3.F, Easing::OutQuart});
 
 		if (animator.Get() > 0.F) {
-			PlayerInfo_t playerInfo;
+			PlayerInfo_t playerInfo {};
 			if (!g_pMemory->m_pEngineClient->GetPlayerInfo(pPl->Networkable()->Index(), &playerInfo))
 				return;
 
@@ -130,10 +130,10 @@ void Features::Visuals_t::Run(Queue_t* pQueue) {
 
 				if (BOOL_GET(bRef, "esp.health"); bRef) {
 					constexpr int iMaxHealth = 100;
-					int iHealth = min(iMaxHealth, pPl->m_iHealth());
+					int iHealth				 = min(iMaxHealth, pPl->m_iHealth());
 
 					constexpr int iWidth = 5;
-					int iHeight = iHealth * vecPosition[3] / iMaxHealth;
+					int iHeight			 = iHealth * vecPosition[3] / iMaxHealth;
 
 					pQueue->Push(std::move(std::make_shared<Rectangle_t>(vecPosition[0] - iWidth - 2, vecPosition[1], iWidth, vecPosition[3], Color_t(0, 0, 0, 120).ModifyA(animator.Get()))));
 					pQueue->Push(std::move(std::make_shared<Rectangle_t>(vecPosition[0] - iWidth - 2, vecPosition[1] + vecPosition[3] - iHeight, iWidth, iHeight, healthColor.ModifyA(animator.Get()))));
@@ -172,8 +172,8 @@ void Features::Visuals_t::Run(Queue_t* pQueue) {
 						if (g_pMemory->m_pDebugOverlay->ScreenPosition(&entry.m_vecPosition, &vecScreenPosition))
 							continue;
 
-						int iX = (int)vecScreenPosition[0] - 5;
-						int iY = (int)vecScreenPosition[1] - 5;
+						int iX			 = (int)vecScreenPosition[0] - 5;
+						int iY			 = (int)vecScreenPosition[1] - 5;
 						constexpr int iW = 10;
 						constexpr int iH = 10;
 
@@ -182,7 +182,7 @@ void Features::Visuals_t::Run(Queue_t* pQueue) {
 
 						//	If within boundaries
 						if (g_iMouseX >= iX && g_iMouseY >= iY && g_iMouseX <= (iX + iW) && g_iMouseY <= (iY + iH)) {
-							std::shared_ptr<Text_t>&& text = std::make_shared<Text_t>(iX + iW / 2, iY + iH + 2, entry.m_strName + " " + std::to_string(entry.m_flFinishTime - g_pMemory->m_pGlobalVars->m_flCurTime), pFont, 15.F, color);
+							std::shared_ptr<Text_t>&& text	   = std::make_shared<Text_t>(iX + iW / 2, iY + iH + 2, entry.m_strName + " " + std::to_string(entry.m_flFinishTime - g_pMemory->m_pGlobalVars->m_flCurTime), pFont, 15.F, color);
 							std::shared_ptr<Text_t>&& location = std::make_shared<Text_t>(text->m_iX, text->m_iY + text->m_iH + 2, entry.m_strLocation + " -> " + (pPl->Networkable()->IsDormant() ? std::string {"Unknown"} : std::string {pPl->m_szLastPlaceName()}), pFont, 15.F, color);
 							text->m_iX -= text->m_iW / 2;
 							location->m_iX -= location->m_iW / 2;
@@ -208,7 +208,7 @@ void Features::Visuals_t::AddFootstep(CBasePlayer* pPl, const Vector_t<float>::V
 
 	if (BOOL_GET(bRef, "esp.footsteps"); bRef && iFootstepTime > 0)
 		if (pPl && vecOrigin.IsValid() && pPl->Networkable()->Index() >= 1 && pPl->Networkable()->Index() <= 64) {
-			PlayerInfo_t playerInfo;
+			PlayerInfo_t playerInfo {};
 			if (!g_pMemory->m_pEngineClient->GetPlayerInfo(pPl->Networkable()->Index(), &playerInfo))
 				return;
 

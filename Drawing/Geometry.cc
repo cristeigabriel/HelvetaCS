@@ -14,41 +14,12 @@
 #define POSITION(x, y, w, h)		  IMVEC2(x, y), IMVEC2(x + w, y + h)
 //	========================================================================================================================================
 
-Rectangle_t::Rectangle_t(int iX, int iY, int iW, int iH, const Color_t& color, float flRounding) {
-	this->m_iX		   = iX;
-	this->m_iY		   = iY;
-	this->m_iW		   = iW;
-	this->m_iH		   = iH;
-	this->m_Color	   = color;
-	this->m_flRounding = flRounding;
-}
-
 void Rectangle_t::Draw(ImDrawList* pDraw) const {
 	pDraw->AddRectFilled(POSITION(this->m_iX, this->m_iY, this->m_iW, this->m_iH), IMVEC4_COLOR(this->m_Color), this->m_flRounding);
 }
 
-RectangleOutline_t::RectangleOutline_t(int iX, int iY, int iW, int iH, const Color_t& color, float flRounding, float flThickness) {
-	this->m_iX			= iX;
-	this->m_iY			= iY;
-	this->m_iW			= iW;
-	this->m_iH			= iH;
-	this->m_Color		= color;
-	this->m_flRounding	= flRounding;
-	this->m_flThickness = flThickness;
-}
-
 void RectangleOutline_t::Draw(ImDrawList* pDraw) const {
 	pDraw->AddRect(POSITION(this->m_iX, this->m_iY, this->m_iW, this->m_iH), IMVEC4_COLOR(this->m_Color), this->m_flRounding, 0, this->m_flThickness);
-}
-
-RectangleGradient_t::RectangleGradient_t(int iX, int iY, int iW, int iH, const Color_t& color, const Color_t& secondColor, bool bHorizontal) {
-	this->m_iX			= iX;
-	this->m_iY			= iY;
-	this->m_iW			= iW;
-	this->m_iH			= iH;
-	this->m_Color		= color;
-	this->m_SecondColor = secondColor;
-	this->m_bHorizontal = bHorizontal;
 }
 
 void RectangleGradient_t::Draw(ImDrawList* pDraw) const {
@@ -58,49 +29,12 @@ void RectangleGradient_t::Draw(ImDrawList* pDraw) const {
 		pDraw->AddRectFilledMultiColor(POSITION(this->m_iX, this->m_iY, this->m_iW, this->m_iH), IMVEC4_COLOR(this->m_Color), IMVEC4_COLOR(this->m_Color), IMVEC4_COLOR(this->m_SecondColor), IMVEC4_COLOR(this->m_SecondColor));
 }
 
-Line_t::Line_t(int iX, int iY, int iX2, int iY2, const Color_t& color, float flThickness) {
-	this->m_iX			= iX;
-	this->m_iY			= iY;
-	this->m_iX2			= iX2;
-	this->m_iY2			= iY2;
-	this->m_Color		= color;
-	this->m_flThickness = flThickness;
-
-	this->m_iW = this->m_iX2 - this->m_iX;
-	this->m_iH = this->m_iY2 - this->m_iY;
-}
-
 void Line_t::Draw(ImDrawList* pDraw) const {
 	pDraw->AddLine(IMVEC2(this->m_iX, this->m_iY), IMVEC2(this->m_iX2, this->m_iY2), IMVEC4_COLOR(this->m_Color), this->m_flThickness);
 }
 
-Circle_t::Circle_t(int iCenterX, int iCenterY, float flRadius, const Color_t& color) {
-	this->m_iCenterX = iCenterX;
-	this->m_iCenterX = iCenterY;
-	this->m_flRadius = flRadius;
-
-	this->m_iX = this->m_iCenterX - (int)flRadius;
-	this->m_iY = this->m_iCenterY - (int)flRadius;
-	this->m_iW = this->m_iH = ((int)flRadius) * 2;
-
-	this->m_Color = color;
-}
-
 void Circle_t::Draw(ImDrawList* pDraw) const {
 	pDraw->AddCircleFilled(IMVEC2(this->m_iCenterX, this->m_iCenterY), this->m_flRadius, IMVEC4_COLOR(this->m_Color));
-}
-
-CircleOutline_t::CircleOutline_t(int iCenterX, int iCenterY, float flRadius, const Color_t& color, float flThickness) {
-	this->m_iCenterX = iCenterX;
-	this->m_iCenterX = iCenterY;
-	this->m_flRadius = flRadius;
-
-	this->m_iX = this->m_iCenterX - (int)flRadius;
-	this->m_iY = this->m_iCenterY - (int)flRadius;
-	this->m_iW = this->m_iH = ((int)flRadius) * 2;
-
-	this->m_Color		= color;
-	this->m_flThickness = flThickness;
 }
 
 void CircleOutline_t::Draw(ImDrawList* pDraw) const {

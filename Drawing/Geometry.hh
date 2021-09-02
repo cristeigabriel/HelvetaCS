@@ -25,9 +25,10 @@ struct ImFont;
  * In the case of using smart pointers, the initializer and deleter will try to find a ctor/dtor
  * accordingly, but find none.
  * 
+ * Constexpr constructors are inlined inside the header. They're not prone to change, so it shouldn't be an issue.
  */
 struct Base_t {
-	Base_t() = default;
+	constexpr Base_t() = default;
 	inline ~Base_t() {};
 
 	virtual void Draw(ImDrawList*) const = 0;
@@ -41,15 +42,22 @@ struct Base_t {
 };
 
 struct BaseDoubleColor_t: public Base_t {
-	BaseDoubleColor_t() = default;
+	constexpr BaseDoubleColor_t() = default;
 	inline ~BaseDoubleColor_t() {};
 
 	Color_t m_SecondColor = {};
 };
 
 struct Rectangle_t final: public Base_t {
-	Rectangle_t() = default;
-	Rectangle_t(int iX, int iY, int iW, int iH, const Color_t& color, float flRounding = 0.F);
+	constexpr Rectangle_t() = default;
+	constexpr Rectangle_t(int iX, int iY, int iW, int iH, const Color_t& color, float flRounding = 0.F) {
+		this->m_iX		   = iX;
+		this->m_iY		   = iY;
+		this->m_iW		   = iW;
+		this->m_iH		   = iH;
+		this->m_Color	   = color;
+		this->m_flRounding = flRounding;
+	}
 	inline ~Rectangle_t() {};
 
 	void Draw(ImDrawList*) const override;
@@ -58,8 +66,16 @@ struct Rectangle_t final: public Base_t {
 };
 
 struct RectangleOutline_t final: public Base_t {
-	RectangleOutline_t() = default;
-	RectangleOutline_t(int iX, int iY, int iW, int iH, const Color_t& color, float flRounding = 0.F, float flThickness = 0.F);
+	constexpr RectangleOutline_t() = default;
+	constexpr RectangleOutline_t(int iX, int iY, int iW, int iH, const Color_t& color, float flRounding = 0.F, float flThickness = 0.F) {
+		this->m_iX			= iX;
+		this->m_iY			= iY;
+		this->m_iW			= iW;
+		this->m_iH			= iH;
+		this->m_Color		= color;
+		this->m_flRounding	= flRounding;
+		this->m_flThickness = flThickness;
+	}
 	inline ~RectangleOutline_t() {};
 
 	void Draw(ImDrawList*) const override;
@@ -69,8 +85,16 @@ struct RectangleOutline_t final: public Base_t {
 };
 
 struct RectangleGradient_t: public BaseDoubleColor_t {
-	RectangleGradient_t() = default;
-	RectangleGradient_t(int iX, int iY, int iW, int iH, const Color_t& color, const Color_t& secondColor, bool bHorizontal = false);
+	constexpr RectangleGradient_t() = default;
+	constexpr RectangleGradient_t(int iX, int iY, int iW, int iH, const Color_t& color, const Color_t& secondColor, bool bHorizontal = false) {
+		this->m_iX			= iX;
+		this->m_iY			= iY;
+		this->m_iW			= iW;
+		this->m_iH			= iH;
+		this->m_Color		= color;
+		this->m_SecondColor = secondColor;
+		this->m_bHorizontal = bHorizontal;
+	}
 	inline ~RectangleGradient_t() {};
 
 	void Draw(ImDrawList*) const override;
@@ -79,8 +103,18 @@ struct RectangleGradient_t: public BaseDoubleColor_t {
 };
 
 struct Line_t final: public Base_t {
-	Line_t() = default;
-	Line_t(int iX, int iY, int iX2, int iY2, const Color_t& color, float flThickness = 1.F);
+	constexpr Line_t() = default;
+	constexpr Line_t(int iX, int iY, int iX2, int iY2, const Color_t& color, float flThickness = 1.F) {
+		this->m_iX			= iX;
+		this->m_iY			= iY;
+		this->m_iX2			= iX2;
+		this->m_iY2			= iY2;
+		this->m_Color		= color;
+		this->m_flThickness = flThickness;
+
+		this->m_iW = this->m_iX2 - this->m_iX;
+		this->m_iH = this->m_iY2 - this->m_iY;
+	}
 	inline ~Line_t() {};
 
 	void Draw(ImDrawList*) const override;
@@ -98,8 +132,18 @@ struct Line_t final: public Base_t {
  * 
  */
 struct Circle_t final: public Base_t {
-	Circle_t() = default;
-	Circle_t(int iCenterX, int iCenterY, float flRadius, const Color_t& color);
+	constexpr Circle_t() = default;
+	constexpr Circle_t(int iCenterX, int iCenterY, float flRadius, const Color_t& color) {
+		this->m_iCenterX = iCenterX;
+		this->m_iCenterX = iCenterY;
+		this->m_flRadius = flRadius;
+
+		this->m_iX = this->m_iCenterX - (int)flRadius;
+		this->m_iY = this->m_iCenterY - (int)flRadius;
+		this->m_iW = this->m_iH = ((int)flRadius) * 2;
+
+		this->m_Color = color;
+	}
 	inline ~Circle_t() {};
 
 	void Draw(ImDrawList*) const override;
@@ -110,8 +154,19 @@ struct Circle_t final: public Base_t {
 };
 
 struct CircleOutline_t final: public Base_t {
-	CircleOutline_t() = default;
-	CircleOutline_t(int iCenterX, int iCenterY, float flRadius, const Color_t& color, float flThickness = 1.F);
+	constexpr CircleOutline_t() = default;
+	constexpr CircleOutline_t(int iCenterX, int iCenterY, float flRadius, const Color_t& color, float flThickness = 1.F) {
+		this->m_iCenterX = iCenterX;
+		this->m_iCenterX = iCenterY;
+		this->m_flRadius = flRadius;
+
+		this->m_iX = this->m_iCenterX - (int)flRadius;
+		this->m_iY = this->m_iCenterY - (int)flRadius;
+		this->m_iW = this->m_iH = ((int)flRadius) * 2;
+
+		this->m_Color		= color;
+		this->m_flThickness = flThickness;
+	}
 	inline ~CircleOutline_t() {};
 
 	void Draw(ImDrawList*) const override;
@@ -123,7 +178,7 @@ struct CircleOutline_t final: public Base_t {
 };
 
 struct Text_t final: public Base_t {
-	Text_t() = default;
+	constexpr Text_t() = default;
 	Text_t(int iX, int iY, std::string strText, const ImFont* pFont, float flSize, const Color_t& color);
 	inline ~Text_t() {};
 
