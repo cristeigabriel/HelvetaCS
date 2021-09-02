@@ -15,6 +15,9 @@
 #include <cmath>
 #include <compare>
 
+#include "Types.hh"
+#include "Util.hh"
+
 namespace Helveta {
 namespace detail {
 	template<typename CharT = char>
@@ -345,7 +348,6 @@ struct CompileTimeStringToByteArray_t {
 	 * @brief Run-time/Compile-time FNV1A String Hasher
 	 * 
 	 */
-using Hash_t = unsigned long long;
 template<typename Hash = Hash_t, Hash Seed = 0x543C730D, Hash Prime = 0x1000931>
 struct StringHasher_t {
 	constexpr static Hash Get(const char* szKey, size_t nLen) {
@@ -781,15 +783,7 @@ using CompileTimeHungarianNotationTypeParser_Nibble_t = CompileTimeHungarianNota
 #define GET_TYPE_SI(x) Helveta::CompileTimeHungarianNotationTypeParser_ShortInt_t<x>::Parse_t
 
 //	Shorthand
-using Helveta::Hash_t;
 using Helveta::Vector_t;
-
-//	Copy/move initialization/assignment
-#define DEFAULT_COPY_MOVE_INIT_ASSIGN(x) \
-	x(const x&) = default; \
-	x(x&&)		= default; \
-	x& operator=(const x&) = default; \
-	x& operator=(x&&) = default;
 
 //	Debug logging
 #define LOG(...) std::cout << __VA_ARGS__ << '\n'

@@ -1,5 +1,7 @@
 #include "Console.hh"
 
+#include "../Helpers/Helpers.hh"
+
 #include <filesystem>
 #include <fstream>
 #include <type_traits>

@@ -1,5 +1,7 @@
 #include "Netvars.hh"
 
+#include "../Helpers/Helpers.hh"
+
 #include "../SDK/ClientClass.hh"
 #undef NDEBUG
 #include <assert.h>

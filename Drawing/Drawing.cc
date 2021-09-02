@@ -1,5 +1,7 @@
 #include "Drawing.hh"
 
+#include "../Helpers/Helpers.hh"
+
 #include "../Vendor/ImGui/imgui.h"
 #include "../Vendor/ImGui/imgui_impl_dx9.h"
 #undef NDEBUG

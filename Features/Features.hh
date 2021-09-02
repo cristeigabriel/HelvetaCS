@@ -8,6 +8,8 @@
 #include "../Entities/Forward.hh"
 #include "../SDK/Forward.hh"
 
+#include "../Helpers/Helpers.hh"
+
 struct Queue_t;
 
 struct Footstep_t {

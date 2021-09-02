@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CBaseEntity.hh"
+#include "../Helpers/Helpers.hh"
 
 NETWORKED_CLASS_INHERIT(CBasePlayer, CBaseEntity, NETWORKED_VARIABLE_DEDUCE(m_iHealth);
 						NETWORKED_VARIABLE_DEDUCE(m_fFlags);

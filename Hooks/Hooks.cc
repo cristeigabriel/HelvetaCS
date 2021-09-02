@@ -147,6 +147,15 @@ bool __cdecl GlowEffectSpectator::Hooked(CCSPlayer* pPl, CCSPlayer* pLocal, int 
  * 
  */
 void Hooks::Bootstrap() {
+	//	Open console
+	AllocConsole();
+
+	//	Allow printing
+	freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
+
+	//	Prepare all needed things
+	g_pMemory = std::make_unique<Memory_t>();
+
 	hwndWindow = FindWindowA("Valve001", nullptr);
 
 	//	Set up drawing manager.
@@ -218,7 +227,7 @@ void Hooks::Bootstrap() {
 		});
 	}
 
-	::g_Netvars = std::move(Netvars_t(g_pMemory->m_pClientClassHead));
+	g_Netvars = std::move(Netvars_t(g_pMemory->m_pClientClassHead));
 
 	//	Finally, hooks.
 	WndProc::Original = (WndProc::Fn_t*)SetWindowLongA(hwndWindow, GWL_WNDPROC, (LONG_PTR)WndProc::Hooked);

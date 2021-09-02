@@ -13,7 +13,7 @@
 
 #include "../Animator/Animator.hh"
 #include "../Drawing/Color.hh"
-#include "../Helpers/Helpers.hh"
+#include "../Helpers/Types.hh"
 
 struct Color_t;
 struct Drawing_t;

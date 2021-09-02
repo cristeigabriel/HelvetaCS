@@ -2,6 +2,7 @@
 
 #include "CBaseEntity.hh"
 #include "Forward.hh"
+#include "../Helpers/Helpers.hh"
 
 class CCSWeaponInfo {
   public:

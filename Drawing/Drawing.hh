@@ -8,7 +8,7 @@
 #include <shared_mutex>
 #include <unordered_map>
 
-#include "../Helpers/Helpers.hh"
+#include "../Helpers/Types.hh"
 #include "Geometry.hh"
 #include "Queue.hh"
 

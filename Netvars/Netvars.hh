@@ -4,7 +4,9 @@
 #include <type_traits>
 #include <unordered_map>
 
-#include "../Helpers/Helpers.hh"
+#include "../Helpers/Types.hh"
+#include "../Helpers/Util.hh"
+
 #include "../SDK/Forward.hh"
 
 struct Netvars_t {
