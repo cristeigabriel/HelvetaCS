@@ -119,6 +119,7 @@ void Console_t::WndProc(UINT u32Msg, WPARAM wParam) {
 		case WM_CHAR: {
 			switch (wParam) {
 				case VK_ESCAPE: {
+					this->m_iTextScrollX			= 0;
 					this->m_nAutoSuggestedSelection = 0;
 					this->m_strInputBuffer.clear();
 				} break;
@@ -230,7 +231,7 @@ void Console_t::Draw(Drawing_t* pDraw) const {
 		if (this->m_bInputFocus) {
 			int iLevel	= (g_iBlockSize - 6) / 2;
 			bool bState = this->m_strInputBuffer.size() == this->m_iTextScrollX;
-			if (bState || this->m_strInputBuffer.empty()) {
+			if (bState) {
 				pDraw->Draw(RectangleGradient_t(6 + iOldW, this->m_iH + 4 - iAnimY, 1, iLevel, g_cursorColor, textColor, false));
 				pDraw->Draw(RectangleGradient_t(6 + iOldW, this->m_iH + 4 + iLevel - iAnimY, 1, iLevel, textColor, g_cursorColor, false));
 			} else {
