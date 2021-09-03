@@ -195,6 +195,8 @@ void Hooks::Bootstrap() {
 		g_pConsole->AddIdentifier("esp.y_animation", false);
 		g_pConsole->AddIdentifier("esp.box", false);
 		g_pConsole->AddIdentifier("esp.box_color", Color_t(255, 255, 255, 255));
+		g_pConsole->AddIdentifier("esp.box_fill", false);
+		g_pConsole->AddIdentifier("esp.box_fill_color", Color_t(0, 0, 0, 120));
 		g_pConsole->AddIdentifier("esp.health", false);
 		g_pConsole->AddIdentifier("esp.health_color", Color_t(255, 255, 0, 255));
 		g_pConsole->AddIdentifier("esp.name", false);

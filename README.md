@@ -2,6 +2,8 @@
 <p align="center">
 	<b>Counter-Strike: Global Offensive feature-rich cheat/base written in C++20</b>
     <br>
+	<b2>Software is subject to change. This picture is from the 2nd of September, 2021</b2>
+	<br>
     <img src=".resources/cheat.png"></img>
 </p>
 
@@ -46,6 +48,7 @@
 *	ESP
 	* *Note: ESP has enemy and teammates filter (***esp.filters.(enemies/teammates)***). The features will apply to the select entities.*
 	* **Box** - ***esp.box***: Make outline of entity's mins/maxs in screen space,
+		* You can also fill the outline contents with **esp.box_fill**.
 	* **Health** - ***esp.health***: Draw health bar on the left of the box,
 	* **Name** - ***esp.name***: Draw entity's name over the box,
 	* **Weapon** - ***esp.weapon***: Draw entity's weapon's name under the box,

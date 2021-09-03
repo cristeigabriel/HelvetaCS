@@ -94,6 +94,7 @@ void Features::Visuals_t::Run(Queue_t* pQueue) {
 	static const ImFont* pFont = g_pDrawing->GetFont(HASH("Terminus"));
 
 	COLOR_GET(boxColor, "esp.box_color");
+	COLOR_GET(boxFillColor, "esp.box_fill_color");
 	COLOR_GET(nameColor, "esp.name_color");
 	COLOR_GET(weaponColor, "esp.weapon_color");
 	COLOR_GET(footstepsColor, "esp.footsteps_color");
@@ -124,6 +125,9 @@ void Features::Visuals_t::Run(Queue_t* pQueue) {
 			if (ComputeBoundingBox(pPl, vecPosition)) {
 				if (BOOL_GET(bRef, "esp.y_animation"); bRef)
 					vecPosition[1] += 16 - (16 * animator.Get());
+
+				if (BOOL_GET(bRef, "esp.box_fill"); bRef)
+					pQueue->Push(std::move(std::make_shared<Rectangle_t>(vecPosition[0], vecPosition[1], vecPosition[2], vecPosition[3], boxFillColor.ModifyA(animator.Get()))));
 
 				if (BOOL_GET(bRef, "esp.box"); bRef)
 					pQueue->Push(std::move(std::make_shared<RectangleOutline_t>(vecPosition[0], vecPosition[1], vecPosition[2], vecPosition[3], boxColor.ModifyA(animator.Get()))));
