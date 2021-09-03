@@ -1,6 +1,12 @@
 <p align="center">
     <img src=".resources/logo.png" width="250" height="120"></img>
-	<br>
+</p>
+<div align="center">
+
+![CPP](https://img.shields.io/badge/MADE%20WITH-C%2B%2B-blue) ![PLATFORM](https://img.shields.io/badge/PLATFORM-WINDOWS-blue) ![LICENSE](https://img.shields.io/badge/LICENSE-WTFPL-blue)
+
+</div>
+<p align="center">
 	<b>Counter-Strike: Global Offensive feature-rich cheat/base written in C++20</b>
     <br>
 	<b2>Software is subject to change. This picture is from the 2nd of September, 2021</b2>
