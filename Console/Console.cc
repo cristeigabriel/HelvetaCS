@@ -7,6 +7,7 @@
 #include <type_traits>
 
 #include "../Drawing/Drawing.hh"
+#include "../Drawing/Color.hh"
 #include "../Vendor/JSON/JSON.hpp"
 
 //	pFont CalcTextSizeA
@@ -29,7 +30,8 @@ constexpr static Color_t g_errorColor				= Color_t(255, 0, 0, 255);
 constexpr static Color_t g_inputColorFocused		= Color_t(32, 32, 32, 142);
 constexpr static Color_t g_inputColorUnfocused		= Color_t(18, 18, 18, 142);
 constexpr static Color_t g_backgroundColor			= Color_t(36, 37, 42, 102);
-constexpr static Color_t g_cursorColor				= Color_t(255, 255, 255, 30);
+constexpr static Color_t g_cursorColor				= Color_t(255, 255, 255, 255);
+constexpr static Color_t g_cursorColorFade			= Color_t(255, 255, 255, 30);
 constexpr static Color_t g_autoSuggestColorEven		= Color_t(36, 36, 36, 142);
 constexpr static Color_t g_autoSuggestColorOdd		= Color_t(44, 44, 44, 142);
 constexpr static Color_t g_autoSuggestColorSelected = Color_t(68, 68, 68, 142);
@@ -232,13 +234,13 @@ void Console_t::Draw(Drawing_t* pDraw) const {
 			int iLevel	= (g_iBlockSize - 6) / 2;
 			bool bState = this->m_strInputBuffer.size() == this->m_iTextScrollX;
 			if (bState) {
-				pDraw->Draw(RectangleGradient_t(6 + iOldW, this->m_iH + 4 - iAnimY, 1, iLevel, g_cursorColor, textColor, false));
-				pDraw->Draw(RectangleGradient_t(6 + iOldW, this->m_iH + 4 + iLevel - iAnimY, 1, iLevel, textColor, g_cursorColor, false));
+				pDraw->Draw(RectangleGradient_t(6 + iOldW, this->m_iH + 4 - iAnimY, 1, iLevel, g_cursorColorFade, g_cursorColor, false));
+				pDraw->Draw(RectangleGradient_t(6 + iOldW, this->m_iH + 4 + iLevel - iAnimY, 1, iLevel, g_cursorColor, g_cursorColorFade, false));
 			} else {
 				int iSubstrSize = (int)pFont->CalcTextSizeA(g_flFontSize, FLT_MAX, 0.F, this->m_strInputBuffer.substr(0, this->m_iTextScrollX).data(), nullptr)[0];
 
-				pDraw->Draw(RectangleGradient_t(6 + iSubstrSize, this->m_iH + 4 - iAnimY, 1, iLevel, g_cursorColor, textColor, false));
-				pDraw->Draw(RectangleGradient_t(6 + iSubstrSize, this->m_iH + 4 + iLevel - iAnimY, 1, iLevel, textColor, g_cursorColor, false));
+				pDraw->Draw(RectangleGradient_t(6 + iSubstrSize, this->m_iH + 4 - iAnimY, 1, iLevel, g_cursorColorFade, g_cursorColor, false));
+				pDraw->Draw(RectangleGradient_t(6 + iSubstrSize, this->m_iH + 4 + iLevel - iAnimY, 1, iLevel, g_cursorColor, g_cursorColorFade, false));
 			}
 		}
 

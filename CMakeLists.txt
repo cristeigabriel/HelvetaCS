@@ -17,6 +17,9 @@ file(GLOB_RECURSE SRC
 # Entities
 "${PROJECT_SOURCE_DIR}/Entities/*.cc",
 
+# Info Bar
+"${PROJECT_SOURCE_DIR}/InfoBar/*.cc",
+
 # Console
 "${PROJECT_SOURCE_DIR}/Console/*.cc",
 

@@ -12,7 +12,6 @@
 #include <vector>
 
 #include "../Animator/Animator.hh"
-#include "../Drawing/Color.hh"
 #include "../Helpers/Types.hh"
 
 struct Color_t;

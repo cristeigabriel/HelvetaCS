@@ -1,5 +1,6 @@
-# Helveta
 <p align="center">
+    <img src=".resources/logo.png" width="250" height="120"></img>
+	<br>
 	<b>Counter-Strike: Global Offensive feature-rich cheat/base written in C++20</b>
     <br>
 	<b2>Software is subject to change. This picture is from the 2nd of September, 2021</b2>
@@ -12,6 +13,7 @@
 
 # Features
 - **Console** - Control center of the cheat. Abilities explained in the detail section.
+- **[NOT DONE!] Info bar** - Bound user information with conditions. Like i3-status. Not ready.
 - **Safe rendering** - Ability to dispatch draw calls in according queues from any thread, concurrently and safely.
 - **Entity Cacher** - Walkable list of all entities.
 - **ESP** - Visual information on entities. Abilities explained in the detail section.

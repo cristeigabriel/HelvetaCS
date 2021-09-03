@@ -5,6 +5,7 @@
 
 #include <iomanip>
 
+#include "../InfoBar/InfoBar.hh"
 #include "../Console/Console.hh"
 #include "../Drawing/Drawing.hh"
 #include "../Entities/CCSPlayer.hh"
@@ -27,7 +28,11 @@ int ::g_iMouseY = 0;
 
 HRESULT __fastcall EndScene::Hooked(void* pThisPtr, void* pEdx, IDirect3DDevice9* pDevice) {
 	g_pConsole->Think();
-	g_pDrawing->Run([](Drawing_t* pDrawing) { g_pConsole->Draw(pDrawing); });
+	g_pDrawing->Run([](Drawing_t* pDrawing) {
+		g_pConsole->Draw(pDrawing);
+		g_InfoBar.Draw(pDrawing);
+	});
+
 	return Original(pThisPtr, pEdx, pDevice);
 }
 
@@ -227,6 +232,21 @@ void Hooks::Bootstrap() {
 
 			return true;
 		});
+
+		g_pConsole->AddCallback("bar.toggle", [](Console_t*) {
+			g_InfoBar.Toggle();
+			return true;
+		});
+	}
+
+	//	Info Bar
+	{
+		const static std::function<bool()>& fnAlive = [&]() -> bool { return (g_pMemory->LocalPlayer() && g_pMemory->LocalPlayer()->Alive()); };
+		g_InfoBar.Push(Content_t(fnAlive, [&](bool bAlive) {
+			Vector_t<float>::V3 origin = bAlive ? g_pMemory->LocalPlayer()->m_vecOrigin() : Vector_t<float>::V3(0, 0, 0);
+			std::string&& strOrigin	   = std::to_string(origin[0]) + ", " + std::to_string(origin[1]) + ", " + std::to_string(origin[2]);
+			return std::make_pair(std::move(strOrigin), bAlive ? Color_t(0, 255, 0, 255) : Color_t(255, 0, 0, 255));
+		}));
 	}
 
 	g_Netvars = std::move(Netvars_t(g_pMemory->m_pClientClassHead));
