@@ -12,10 +12,10 @@
 	<b2>Software is subject to change. This picture is from the 2nd of September, 2021</b2>
 	<br>
     <img src=".resources/cheat.png"></img>
+	<br>
+	<br>
+  <a href="https://discord.gg/jfT8BJrFQh"><img width="245" src="https://discordapp.com/api/guilds/882976173678817301/widget.png?style=banner3" alt="discord"></a>
 </p>
-
-# Want to chat, have suggestions, or need support?
-[Join us on Discord!](https://discord.gg/jfT8BJrFQh)
 
 # Features
 - **Console** - Control center of the cheat. Abilities explained in the detail section.
