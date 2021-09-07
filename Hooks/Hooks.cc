@@ -221,6 +221,11 @@ void Hooks::Bootstrap() {
 
 		g_pConsole->AddCallback("config.load", [](Console_t* pConsole) { return pConsole->LoadConfig(); });
 
+		g_pConsole->AddCallback("bar.toggle", [](Console_t*) {
+			g_InfoBar.Toggle();
+			return true;
+		});
+
 		g_pConsole->AddCallback("help", [](Console_t* pConsole) {
 			if (pConsole->m_vecCollection.empty())
 				return false;
@@ -232,16 +237,11 @@ void Hooks::Bootstrap() {
 
 			return true;
 		});
-
-		g_pConsole->AddCallback("bar.toggle", [](Console_t*) {
-			g_InfoBar.Toggle();
-			return true;
-		});
 	}
 
 	//	Info Bar
 	{
-		const static std::function<bool()>& fnAlive = [&]() -> bool { return (g_pMemory->LocalPlayer() && g_pMemory->LocalPlayer()->Alive()); };
+		const std::function<bool()>& fnAlive = [&]() -> bool { return (g_pMemory->LocalPlayer() && g_pMemory->LocalPlayer()->Alive()); };
 		g_InfoBar.Push(Content_t(fnAlive, [&](bool bAlive) {
 			Vector_t<float>::V3 origin = bAlive ? g_pMemory->LocalPlayer()->m_vecOrigin() : Vector_t<float>::V3(0, 0, 0);
 			std::string&& strOrigin	   = std::to_string(origin[0]) + ", " + std::to_string(origin[1]) + ", " + std::to_string(origin[2]);
@@ -258,7 +258,7 @@ void Hooks::Bootstrap() {
 	HOOK(FrameStageNotify, g_pMemory->m_Client.FindString<"Setting fallback player %s as local player\n", false>().FollowUntil(0x55, false));
 	HOOK(OnAddEntity, g_pMemory->m_Client.FindPattern(STB("55 8B EC 51 8B 45 0C 53 56 8B F1 57")));
 	HOOK(OnRemoveEntity, g_pMemory->m_Client.FindPattern(STB("55 8B EC 51 8B 45 0C 53 8B D9 56 57 83 F8 FF 75 07")));
-	static const Memory::Pointer_t& levelInitPrePost = g_pMemory->m_Client.FindString<"(mapname)", false>();
+	const Memory::Pointer_t& levelInitPrePost = g_pMemory->m_Client.FindString<"(mapname)", false>();
 	//	@22aug opcode intersection with address
 	HOOK(LevelInitPreEntity, levelInitPrePost.FollowUntil(0xEC, false).FollowUntil(0x55, false));
 	HOOK(LevelInitPostEntity, levelInitPrePost.FollowUntil(0x55, true));

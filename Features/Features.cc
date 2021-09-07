@@ -127,10 +127,10 @@ void Features::Visuals_t::Run(Queue_t* pQueue) {
 					vecPosition[1] += 16 - (16 * animator.Get());
 
 				if (BOOL_GET(bRef, "esp.box_fill"); bRef)
-					pQueue->Push(std::move(std::make_shared<Rectangle_t>(vecPosition[0], vecPosition[1], vecPosition[2], vecPosition[3], boxFillColor.ModifyA(animator.Get()))));
+					pQueue->Push(std::make_shared<Rectangle_t>(vecPosition[0], vecPosition[1], vecPosition[2], vecPosition[3], boxFillColor.ModifyA(animator.Get())));
 
 				if (BOOL_GET(bRef, "esp.box"); bRef)
-					pQueue->Push(std::move(std::make_shared<RectangleOutline_t>(vecPosition[0], vecPosition[1], vecPosition[2], vecPosition[3], boxColor.ModifyA(animator.Get()))));
+					pQueue->Push(std::make_shared<RectangleOutline_t>(vecPosition[0], vecPosition[1], vecPosition[2], vecPosition[3], boxColor.ModifyA(animator.Get())));
 
 				if (BOOL_GET(bRef, "esp.health"); bRef) {
 					constexpr int iMaxHealth = 100;
@@ -139,8 +139,8 @@ void Features::Visuals_t::Run(Queue_t* pQueue) {
 					constexpr int iWidth = 5;
 					int iHeight			 = iHealth * vecPosition[3] / iMaxHealth;
 
-					pQueue->Push(std::move(std::make_shared<Rectangle_t>(vecPosition[0] - iWidth - 2, vecPosition[1], iWidth, vecPosition[3], Color_t(0, 0, 0, 120).ModifyA(animator.Get()))));
-					pQueue->Push(std::move(std::make_shared<Rectangle_t>(vecPosition[0] - iWidth - 2, vecPosition[1] + vecPosition[3] - iHeight, iWidth, iHeight, healthColor.ModifyA(animator.Get()))));
+					pQueue->Push(std::make_shared<Rectangle_t>(vecPosition[0] - iWidth - 2, vecPosition[1], iWidth, vecPosition[3], Color_t(0, 0, 0, 120).ModifyA(animator.Get())));
+					pQueue->Push(std::make_shared<Rectangle_t>(vecPosition[0] - iWidth - 2, vecPosition[1] + vecPosition[3] - iHeight, iWidth, iHeight, healthColor.ModifyA(animator.Get())));
 				}
 
 				if (BOOL_GET(bRef, "esp.name"); bRef) {
@@ -182,7 +182,7 @@ void Features::Visuals_t::Run(Queue_t* pQueue) {
 						constexpr int iH = 10;
 
 						const Color_t& color = footstepsColor.ModifyA(entry.m_Animation.Get());
-						pQueue->Push(std::move(std::make_shared<RectangleOutline_t>(iX, iY, iW, iH, color)));
+						pQueue->Push(std::make_shared<RectangleOutline_t>(iX, iY, iW, iH, color));
 
 						//	If within boundaries
 						if (g_iMouseX >= iX && g_iMouseY >= iY && g_iMouseX <= (iX + iW) && g_iMouseY <= (iY + iH)) {

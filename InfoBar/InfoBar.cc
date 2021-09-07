@@ -42,17 +42,13 @@ void InfoBar_t::Draw(Drawing_t* pDraw) const {
 	int iY = pDraw->m_iScreenH - g_iBlockSize;
 	pDraw->Draw(Rectangle_t(0, iY, pDraw->m_iScreenW, pDraw->m_iScreenH, g_backgroundColor));
 
-	//	Eventually, move data and thinking to their own function and do some caching.
-	bool bEmpty			  = this->m_vecContents.empty();
-	size_t iLastDelimiter = this->m_vecContents.size();
-	int iCursor			  = 0;
-
+	int iCursor = 0;
 	for (size_t i = 0; i < this->m_vecContents.size(); ++i) {
 		const Content_t::Result_t& entry = this->m_vecContents[i].Get();
 		Text_t&& text					 = Text_t(iCursor, iY + g_iBlockSize / 2, entry.first, pFont, g_flFontSize, entry.second);
 		text.m_iY -= text.m_iH / 2;
 
-		if (i > 0 && i < iLastDelimiter)
+		if (i > 0 && i < this->m_vecContents.size())
 			pDraw->Draw(Rectangle_t(iCursor - (int)(g_iContentDelimiterSpace / 2) - (int)(g_iContentDelimiterWidth / 2), iY + 2, g_iContentDelimiterWidth, g_iBlockSize - 4, g_contentDelimiterColor));
 
 		iCursor += text.m_iW + g_iContentDelimiterSpace;
