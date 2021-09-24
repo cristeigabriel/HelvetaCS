@@ -262,7 +262,7 @@ void Hooks::Bootstrap() {
 	//	@22aug opcode intersection with address
 	HOOK(LevelInitPreEntity, levelInitPrePost.FollowUntil(0xEC, false).FollowUntil(0x55, false));
 	HOOK(LevelInitPostEntity, levelInitPrePost.FollowUntil(0x55, true));
-	HOOK(CreateMove, g_pMemory->m_Client.FindPattern(STB("55 8B EC 8B 0D ? ? ? ? 85 C9 75 06")));
+	HOOK(CreateMove, g_pMemory->m_Client.FindPattern(STB("55 8B EC 8B 4D 04 8B C1 83 C0 04 8B 0D ? ? ? ? 85 C9 75 06 B0 01 5D C2 08 00")));
 	HOOK(PlayStepSound, g_pMemory->m_Client.FindString<"ct_%s", false>().FollowUntil(0x55, false));
 	HOOK(GlowEffectSpectator, g_pMemory->m_Client.FindPattern(STB("55 8B EC 83 EC 14 53 8B 5D 0C 56 57 85 DB 74 47 ")));
 }

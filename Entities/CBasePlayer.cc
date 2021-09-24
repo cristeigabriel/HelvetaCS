@@ -7,5 +7,5 @@ bool CBasePlayer::Alive() {
 }
 
 CBaseCombatWeapon* CBasePlayer::GetActiveWeapon() {
-	return Memory::VirtualCall<CBaseCombatWeapon*, 267>(this);
+	return Memory::VirtualCall<CBaseCombatWeapon*, 268>(this);
 }
