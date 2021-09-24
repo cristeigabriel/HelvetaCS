@@ -4,5 +4,5 @@
 
 class SDK::IInputSystem {
   public:
-	void EnableInput(bool bState);
+    void EnableInput(bool bState);
 };

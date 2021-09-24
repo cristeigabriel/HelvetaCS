@@ -4,5 +4,5 @@
 
 class SDK::ILocalize {
   public:
-	const char* Find(const char* szLocalizationToken);
+    const char* Find(const char* szLocalizationToken);
 };

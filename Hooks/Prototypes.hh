@@ -13,12 +13,12 @@
  */
 //	========================================================================================================================================
 #define PROTOTYPE(name, type) \
-	struct name { \
-		using Fn_t = std::remove_pointer_t<type>; \
-		static Fn_t Hooked; \
-		static Fn_t* Original; \
-	}; \
-	inline name::Fn_t* name::Original;
+    struct name { \
+        using Fn_t = std::remove_pointer_t<type>; \
+        static Fn_t Hooked; \
+        static Fn_t* Original; \
+    }; \
+    inline name::Fn_t* name::Original;
 //	========================================================================================================================================
 
 /**

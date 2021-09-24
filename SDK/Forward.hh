@@ -6,10 +6,10 @@
  */
 //	========================================================================================================================================
 #define CONCAT_IMPL(a, b) a##b
-#define CONCAT(a, b)	  CONCAT_IMPL(a, b)
+#define CONCAT(a, b)      CONCAT_IMPL(a, b)
 #define PAD(x) \
   private: \
-	char CONCAT(__pad, __COUNTER__)[x]; \
+    char CONCAT(__pad, __COUNTER__)[x]; \
 \
   public:
 //	========================================================================================================================================
@@ -39,9 +39,9 @@ class IVEngineClient;
 class ILocalize;
 
 //	Likewise with typedefs.
-using CreateClientClass		= void*(__cdecl*)(int, int);
-using CreateEvent			= void*(__cdecl*)();
-using RecvVarProxy			= void(__cdecl*)(const CRecvProxyData*, void*, void*);
-using ArrayLengthRecvProxy	= void(__cdecl*)(void*, int, int);
+using CreateClientClass     = void*(__cdecl*)(int, int);
+using CreateEvent           = void*(__cdecl*)();
+using RecvVarProxy          = void(__cdecl*)(const CRecvProxyData*, void*, void*);
+using ArrayLengthRecvProxy  = void(__cdecl*)(void*, int, int);
 using DataTableRecvVarProxy = void(__cdecl*)(const RecvProp*, void**, void*, int);
 }  // namespace SDK

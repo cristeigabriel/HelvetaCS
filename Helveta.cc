@@ -6,12 +6,12 @@
 
 BOOL APIENTRY
 DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
-	if (ul_reason_for_call != DLL_PROCESS_ATTACH)
-		return false;
+    if (ul_reason_for_call != DLL_PROCESS_ATTACH)
+        return false;
 
-	DisableThreadLibraryCalls(hModule);
+    DisableThreadLibraryCalls(hModule);
 
-	Hooks::Bootstrap();
+    Hooks::Bootstrap();
 
-	return true;
+    return true;
 }
