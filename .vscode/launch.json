@@ -5,7 +5,7 @@
 			"name": "Debug DLL",
 			"type": "cppvsdbg",
 			"request": "attach",
-			"program": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Counter-Strike Global Offensive\\csgo.exe",
+			"program": "D:\\SteamLibrary\\steamapps\\common\\Counter-Strike Global Offensive\\csgo.exe",
 			"processName": "csgo.exe",
 			"args": [],
 			"stopAtEntry": false,
