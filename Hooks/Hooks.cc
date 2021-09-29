@@ -98,8 +98,8 @@ bool __stdcall CreateMove::Hooked(float flSampleTime, SDK::CUserCmd* pCmd) {
 
     Original(flSampleTime, pCmd);
 
-    Features::NoDuckDelay(pCmd);
-    Features::BunnyHop(pCmd);
+    Features::g_Misc.NoDuckDelay(pCmd);
+    Features::g_Misc.BunnyHop(pCmd);
 
     pCmd->m_vecViewAngles.NormalizeAngle();
     pCmd->m_vecViewAngles.ClampAngle();
