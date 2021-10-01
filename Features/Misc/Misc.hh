@@ -3,8 +3,6 @@
 #include "../Features.hh"
 
 namespace Features {
-    struct Misc_t {
-        void NoDuckDelay(SDK::CUserCmd* pCmd);
-        void BunnyHop(SDK::CUserCmd* pCmd);
-    }inline g_Misc;
+    extern inline void NoDuckDelay(SDK::CUserCmd* pCmd);
+    extern inline void BunnyHop(SDK::CUserCmd* pCmd);
 }  // namespace Features

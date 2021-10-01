@@ -33,6 +33,12 @@ HRESULT __fastcall EndScene::Hooked(void* pThisPtr, void* pEdx, IDirect3DDevice9
         g_InfoBar.Draw(pDrawing);
     });
 
+    /*ImGui::CreateContext();
+    ImGui::BeginFrame();
+
+
+    ImGui::EndFrame();*/ // will add when my braincells regenerate in the morning.
+
     return Original(pThisPtr, pEdx, pDevice);
 }
 
@@ -98,8 +104,8 @@ bool __stdcall CreateMove::Hooked(float flSampleTime, SDK::CUserCmd* pCmd) {
 
     Original(flSampleTime, pCmd);
 
-    Features::g_Misc.NoDuckDelay(pCmd);
-    Features::g_Misc.BunnyHop(pCmd);
+    Features::NoDuckDelay(pCmd);
+    Features::BunnyHop(pCmd);
 
     pCmd->m_vecViewAngles.NormalizeAngle();
     pCmd->m_vecViewAngles.ClampAngle();

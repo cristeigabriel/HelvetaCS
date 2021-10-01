@@ -18,12 +18,12 @@ static inline bool ValidMoveType() {
     return !(g_pMemory->LocalPlayer()->m_nMoveType() == MOVETYPE_NOCLIP || g_pMemory->LocalPlayer()->m_nMoveType() == MOVETYPE_LADDER);
 }
 
-void Features::Misc_t::NoDuckDelay(SDK::CUserCmd* pCmd) {
+void Features::NoDuckDelay(SDK::CUserCmd* pCmd) {
     if (BOOL_GET(bRef, "misc.no_duck_delay"); bRef)
         pCmd->m_nButtons |= IN_BULLRUSH;
 }
 
-void Features::Misc_t::BunnyHop(SDK::CUserCmd* pCmd) {
+void Features::BunnyHop(SDK::CUserCmd* pCmd) {
     if (BOOL_GET(bRef, "misc.bunny_hop"); bRef)
         if (ValidMoveType())
             if (pCmd->m_nButtons & IN_JUMP && !(g_pMemory->LocalPlayer()->m_fFlags() & FL_ONGROUND))
