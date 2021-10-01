@@ -35,9 +35,6 @@ file(GLOB_RECURSE SRC
 # Features Misc
 "${PROJECT_SOURCE_DIR}/Features/Misc/*.cc",
 
-# Features Legit
-"${PROJECT_SOURCE_DIR}/Features/Legitbot/*.cc",
-
 # Hooks
 "${PROJECT_SOURCE_DIR}/Hooks/*.cc",
 
