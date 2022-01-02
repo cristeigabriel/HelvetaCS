@@ -14,7 +14,6 @@
     <img src=".resources/cheat.png"></img>
 	<br>
 	<br>
-  <a href="https://discord.gg/jfT8BJrFQh"><img width="245" src="https://discordapp.com/api/guilds/882976173678817301/widget.png?style=banner3" alt="discord"></a>
 </p>
 
 # Features
