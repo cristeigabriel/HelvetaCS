@@ -85,6 +85,7 @@
 		"source_location": "cpp"
 	},
 	"C_Cpp.default.intelliSenseMode": "windows-clang-x86",
+	"C_Cpp.errorSquiggles": "Enabled",
 	// "cmake.configureArgs": [
 	// 	"-A Win32"
 	// ]

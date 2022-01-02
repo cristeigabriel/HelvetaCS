@@ -33,6 +33,12 @@ HRESULT __fastcall EndScene::Hooked(void* pThisPtr, void* pEdx, IDirect3DDevice9
         g_InfoBar.Draw(pDrawing);
     });
 
+    /*ImGui::CreateContext();
+    ImGui::BeginFrame();
+
+
+    ImGui::EndFrame();*/ // will add when my braincells regenerate in the morning.
+
     return Original(pThisPtr, pEdx, pDevice);
 }
 

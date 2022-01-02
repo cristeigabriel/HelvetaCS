@@ -29,6 +29,12 @@ file(GLOB_RECURSE SRC
 # Features
 "${PROJECT_SOURCE_DIR}/Features/*.cc",
 
+# Features Visuals
+"${PROJECT_SOURCE_DIR}/Features/Visuals/*.cc",
+
+# Features Misc
+"${PROJECT_SOURCE_DIR}/Features/Misc/*.cc",
+
 # Hooks
 "${PROJECT_SOURCE_DIR}/Hooks/*.cc",
 
